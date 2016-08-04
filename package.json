@@ -1,0 +1,27 @@
+{
+  "name": "odata-client",
+  "version": "0.0.0",
+  "description": "odata client",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kanthoney/odata-client.git"
+  },
+  "keywords": [
+    "odata",
+    "client"
+  ],
+  "author": "Kevin Anthoney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kanthoney/odata-client/issues"
+  },
+  "dependencies": {
+    "bluebird": "^3.4.1",
+    "lodash": "^4.14.1",
+    "request": "^2.74.0"
+  }
+}
