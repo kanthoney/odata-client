@@ -1,6 +1,7 @@
 'use strict';
 
 const _ = require('lodash');
+const identifier = require('./identifier');
 
 var escape = function(s, noquote)
 {
@@ -10,6 +11,12 @@ var escape = function(s, noquote)
     } else {
       return `'${s.replace(/\'/g, "''")}'`;
     }
+  }
+  if(s instanceof identifier) {
+    return escape(s.toString(), true);
+  }
+  if(_.isNull(s)) {
+    return 'null';
   }
   if(_.isArray(s)) {
     var els = _.map(s, function(el) {

@@ -1,6 +1,7 @@
 'use strict';
 
 const escape = require('../escape');
+const identifier = require('../identifier');
 
 describe('escape value tests', function() {
   
@@ -16,6 +17,10 @@ describe('escape value tests', function() {
     expect(escape(3.1)).toEqual('3.1');
   });
 
+  it('should escape null', function() {
+    expect(escape(null)).toEqual('null');
+  });
+
   it('should escape [1,\'2\']', function() {
     expect(escape([1,'2'])).toEqual('[1,\'2\']');
   });
@@ -26,6 +31,10 @@ describe('escape value tests', function() {
 
   it('should escape {a:\'\\\'text\\\'\',b:{c:6,d:\'\\\'string\\\'\'}}', function() {
     expect(escape({a:'\'text\'',b:{c:6,d:'\'string\''}})).toEqual('{a:\'\'\'text\'\'\',b:{c:6,d:\'\'\'string\'\'\'}}');
+  });
+
+  it('should escape identifier(\'a\')', function() {
+    expect(escape(new identifier('a'))).toEqual('a');
   });
 
 });
