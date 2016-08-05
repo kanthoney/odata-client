@@ -90,6 +90,44 @@ Odata.prototype.count = function()
   return this;
 };
 
+Odata.prototype.order = function(item, dir)
+{
+  var self = this;
+  this._order = this._order || '';
+  var add = function(item, dir) {
+    if(self._order !== '') {
+      self._order += ',';
+    }
+    if(dir === undefined) {
+      self._order += `${escape(item, true)}`;
+    } else {
+      if(!dir || dir.toString().toLowerCase() === 'desc') {
+        dir = 'desc';
+      } else {
+        dir = 'asc';
+      }
+      self._order += `${escape(item, true)} ${dir}`;
+    }
+  }
+  if(_.isArray(item)) {
+    for(let i = 0; i < arguments.length; i++) {
+      let arg = arguments[i];
+      if(_.isArray(arg)) {
+        if(arg.length >= 2) {
+          add(arg[0], arg[1]);
+        } else {
+          add(arg[0]);
+        }
+      } else {
+        add(arg);
+      }
+    }
+  } else {
+    add(item, dir);
+  }
+  return this;
+};
+
 Odata.prototype.custom = function(name, value)
 {
   if(value === undefined && _.isPlainObject(value)) {
@@ -133,6 +171,9 @@ Odata.prototype.query = function()
     addPart('$select', _.map(this._select, function(item) {
       return escape(item);
     }).join());
+  }
+  if(this._order !== undefined) {
+    addPart('$orderby', this._order);
   }
   if(!_.isEmpty(this._custom)) {
     _.forOwn(this._custom, function(v, k) {
