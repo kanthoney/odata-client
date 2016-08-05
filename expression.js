@@ -25,7 +25,9 @@ const ops = {
   sub: 'sub',
   mul: 'mul',
   div: 'div',
-  mod: 'mod'
+  mod: 'mod',
+  and: 'and',
+  or: 'or'
 };
 
 var getOp = function(op)
@@ -128,6 +130,16 @@ Expression.prototype.div = function(value)
 Expression.prototype.mod = function(value)
 {
   return this.op('%', value);
+};
+
+Expression.prototype.and = function(field, op, value)
+{
+  return new Expression(this, 'and', new Expression(field, op, value));
+};
+
+Expression.prototype.or = function(field, op, value)
+{
+  return new Expression(this, 'or', new Expression(field, op, value));
 };
 
 module.exports = Expression;
