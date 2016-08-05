@@ -32,6 +32,10 @@ describe('expression tests', function() {
     expect(new Expression(e2, '=', e3).toString()).toEqual('(b add 2) eq (5)');
   });
 
+  it('should express e2 = e3, method 2', function() {
+    expect(new Expression(e2, e3).toString()).toEqual('(b add 2) eq (5)');
+  });
+
   it('should express e2 != e3', function() {
     expect(new Expression(e2, '!=', e3).toString()).toEqual('(b add 2) ne (5)');
   });

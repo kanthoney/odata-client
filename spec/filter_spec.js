@@ -34,7 +34,7 @@ describe('filter tests', function() {
   });
 
  it('should produce a filter credit > 5000 and (balance = 0 or status = \'stop\')', function() {
-   expect(odata.filter('credit', '>', 5000).and(Odata.expression('balance', '=', 0).or('status', '=', 'stop')).query())
+   expect(odata.filter('credit', '>', 5000).and(Odata.expression('balance', 0).or('status', 'stop')).query())
       .toEqual('https://example.com/Customer?%24filter=(credit%20gt%205000)%20and%20((balance%20eq%200)' +
                '%20or%20(status%20eq%20\'stop\'))');
   });
@@ -45,7 +45,7 @@ describe('filter tests', function() {
   });
 
   it('should produce a filter \'ABC001\' eq account', function() {
-    expect(odata.filter(Odata.literal('ABC001'), '=', Odata.identifier('account')).query())
+    expect(odata.filter(Odata.literal('ABC001'), Odata.identifier('account')).query())
       .toEqual('https://example.com/Customer?%24filter=\'ABC001\'%20eq%20account');
   });
 

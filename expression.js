@@ -56,6 +56,10 @@ var Expression = function(field, op, value)
     } else {
       left = `${escape(field, true)}`;
     }
+    if(value === undefined) {
+      value = op;
+      op = 'eq';
+    }
     if(value instanceof Expression) {
       right = `(${value.toString()})`;
     } else {
