@@ -60,9 +60,19 @@ Odata.prototype.not = function(field, op, value)
 
 Odata.prototype.resource = function(resource, value)
 {
-  this._resources += `/${resource}`;
-  if(this.value !== undefined) {
-    this._resources += `(${value})`;
+  if(this._resources !== '') {
+    this._resources += '/';
+  }
+  this._resources += `${resource}`;
+  if(value !== undefined) {
+    if(_.isPlainObject(value)) {
+      var clauses = _.map(_.keys(value), function(k) {
+        return `${escape(k, true)}=${escape(value[k])}`;
+      });
+      this._resources += `(${encodeURIComponent(clauses.join())})`;
+    } else {
+      this._resources += `(${encodeURIComponent(escape(value))})`;
+    }
   }
   return this;
 };
