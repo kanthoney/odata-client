@@ -39,5 +39,15 @@ describe('filter tests', function() {
                '%20or%20(status%20eq%20\'stop\'))');
   });
 
+  it('should produce a filter balance > credit', function() {
+    expect(odata.filter('balance', '>', Odata.identifier('credit')).query())
+      .toEqual('https://example.com/Customer?%24filter=balance%20gt%20credit');
+  });
+
+  it('should produce a filter \'ABC001\' eq account', function() {
+    expect(odata.filter(Odata.literal('ABC001'), '=', Odata.identifier('account')).query())
+      .toEqual('https://example.com/Customer?%24filter=\'ABC001\'%20eq%20account');
+  });
+
 });
 

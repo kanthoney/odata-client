@@ -5,6 +5,7 @@ const _ = require('lodash');
 const Promise = require('bluebird');
 const escape = require('./escape');
 const Identifier = require('./identifier');
+const Literal = require('./literal');
 
 var Odata = function(config)
 {
@@ -144,5 +145,10 @@ module.exports.expression = function(field, op, value)
 module.exports.identifier = function(value)
 {
   return new Identifier(value);
+};
+
+module.exports.literal = function(value)
+{
+  return new Literal(value);
 };
 
