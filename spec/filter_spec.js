@@ -1,6 +1,6 @@
 'use strict';
 
-const Odata = require('../index');
+const Odata = require('../odata');
 const config = {
   service: 'https://example.com',
   resources: 'Customer'
@@ -10,7 +10,7 @@ describe('filter tests', function() {
   
   var odata;
   beforeEach(function() {
-    odata = require('../index.js')(config);
+    odata = Odata(config);
   });
 
   it('should produce a filter account eq \'ABC001\'', function() {

@@ -2,7 +2,7 @@
   "name": "odata-client",
   "version": "0.0.0",
   "description": "odata client",
-  "main": "index.js",
+  "main": "odata.js",
   "scripts": {
     "test": "jasmine"
   },
