@@ -80,7 +80,11 @@ Odata.prototype.resource = function(resource, value)
 Odata.prototype.select = function(items)
 {
   this._select = this._select || [];
-  Array.prototype.push.apply(this._select, items);
+  if(_.isArray(items)) {
+    Array.prototype.push.apply(this._select, items);
+  } else {
+    Array.prototype.push.apply(this._select, arguments);
+  }
   return this;
 };
 
@@ -169,7 +173,7 @@ Odata.prototype.query = function()
   }
   if(this._select) {
     addPart('$select', _.map(this._select, function(item) {
-      return escape(item);
+      return escape(item, true);
     }).join());
   }
   if(this._order !== undefined) {
