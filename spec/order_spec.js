@@ -15,28 +15,28 @@ describe('orderby tests', function() {
   });
 
   it('should order Customers resource by balance', function() {
-    expect(odata.order('balance').query()).toEqual('https://example.com/Customers?%24orderby=balance');
+    expect(odata.orderby('balance').query()).toEqual('https://example.com/Customers?%24orderby=balance');
   });
 
   it('should order Customers resource by balance ascending', function() {
-    expect(odata.order('balance', 'asc').query()).toEqual('https://example.com/Customers?%24orderby=balance%20asc');
+    expect(odata.orderby('balance', 'asc').query()).toEqual('https://example.com/Customers?%24orderby=balance%20asc');
   });
 
   it('should order Customers resource by balance descending', function() {
-    expect(odata.order('balance', 'desc').query()).toEqual('https://example.com/Customers?%24orderby=balance%20desc');
+    expect(odata.orderby('balance', 'desc').query()).toEqual('https://example.com/Customers?%24orderby=balance%20desc');
   });
 
   it('should order Customers resource by balance descending', function() {
-    expect(odata.order(['balance', 'desc']).query()).toEqual('https://example.com/Customers?%24orderby=balance%20desc');
+    expect(odata.orderby(['balance', 'desc']).query()).toEqual('https://example.com/Customers?%24orderby=balance%20desc');
   });
 
   it('should order Customers resource by PriceGroup then balance descending', function() {
-    expect(odata.order(['PriceGroup'], ['balance', 'desc']).query())
+    expect(odata.orderby(['PriceGroup'], ['balance', 'desc']).query())
       .toEqual('https://example.com/Customers?%24orderby=PriceGroup%2Cbalance%20desc');
   });
 
   it('should order Customers resource by PriceGroup then balance descending (method 2)', function() {
-    expect(odata.order('PriceGroup').order(['balance', 'desc']).query())
+    expect(odata.orderby('PriceGroup').orderby(['balance', 'desc']).query())
       .toEqual('https://example.com/Customers?%24orderby=PriceGroup%2Cbalance%20desc');
   });
 

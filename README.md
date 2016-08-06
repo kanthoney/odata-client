@@ -130,15 +130,15 @@ Sets the term for `$search`.
 
 Adds a $count clause to the query
 
-* `order(item, dir)`
+* `orderby(item, dir)`
 
 Adds an `$orderby` clause to the query.  There are several ways to call this function:
 
-  1. `q.order('Account')` produces `$orderby=Account`
+  1. `q.orderby('Account')` produces `$orderby=Account`
 
-  1. `q.order('Account', 'desc')` produces `$orderby=Account desc`
+  1. `q.orderby('Account', 'desc')` produces `$orderby=Account desc`
 
-  1. `q.order(['Status', 'desc'], ['Account'])` produces `$orderby=Status desc,Account`
+  1. `q.orderby(['Status', 'desc'], ['Account'])` produces `$orderby=Status desc,Account`
 
 * `custom(name, value)`
 

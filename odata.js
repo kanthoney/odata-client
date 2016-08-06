@@ -102,7 +102,7 @@ Odata.prototype.count = function()
   return this;
 };
 
-Odata.prototype.order = function(item, dir)
+Odata.prototype.orderby = function(item, dir)
 {
   var self = this;
   this._order = this._order || '';
