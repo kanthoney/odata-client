@@ -4,7 +4,7 @@ A client library for accessing odata resources using node.  HTTP queries return 
 
 ## Installation
 
-npm install odata-client
+`npm install odata-client`
 
 ## Usage
 
