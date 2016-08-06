@@ -1,7 +1,7 @@
 {
   "name": "odata-client",
   "version": "0.1.0",
-  "description": "odata client REST",
+  "description": "odata client",
   "main": "odata.js",
   "scripts": {
     "test": "jasmine"
@@ -12,7 +12,8 @@
   },
   "keywords": [
     "odata",
-    "client"
+    "client",
+    "REST"
   ],
   "author": "Kevin Anthoney",
   "license": "ISC",
