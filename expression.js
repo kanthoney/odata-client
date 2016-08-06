@@ -2,6 +2,7 @@
 
 const escape = require('./escape');
 const _ = require('lodash');
+const Lambda = require('./lambda');
 
 const ops = {
   '=': 'eq',
@@ -49,6 +50,18 @@ var Expression = function(field, op, value)
     } else {
       this.exp = escape(field, true);
     }
+  } else if(field instanceof Lambda) {
+    var right;
+    if(value === undefined) {
+      value = op;
+      op = 'eq';
+    }
+    if(value instanceof Expression) {
+      right = `(${value.toString()})`;
+    } else {
+      right = `${escape(value)}`;
+    }
+    this.exp = `${escape(field.name, true)}/${field.type}(${field.variable}:${field.variable}/${field.property} ${getOp(op)} ${right})`;
   } else {
     var left, right;
     if(field instanceof Expression) {

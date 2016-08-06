@@ -104,6 +104,22 @@ Adds an `or` clause to the filter being built.
 
 Adds a `not` clause to the filter
 
+* `all(field, property, op, value)`
+
+Adds an `all` filter, e.g. 
+
+```
+q.all('Orders', 'Value', '<', 50) // ?$filter=Orders/all(p0:p0/Value lt 50)
+```
+
+* `any(field, property, op, value)`
+
+Adds an `any` filter, e.g. 
+
+```
+q.any('Orders', 'Lines/$count', '>=', 10) // ?$filter=Orders/any(p0:p0/Lines/$count ge 10)
+```
+
 * `resource(resource, value)`
 
 Adds a new part to the resource section. e.g.

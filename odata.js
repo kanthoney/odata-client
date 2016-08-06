@@ -7,6 +7,7 @@ const escape = require('./escape');
 const Identifier = require('./identifier');
 const Literal = require('./literal');
 const request = require('./request');
+const Lambda = require('./lambda');
 
 var Odata = function(config)
 {
@@ -15,6 +16,7 @@ var Odata = function(config)
   this._resources = config.resources || '';
   this._custom = config.custom || {};
   this._headers = config.headers || {};
+  this._nextLambda = 0;
   if(config.version) {
     this._headers['OData-Version'] = config.version;
   }
@@ -64,6 +66,16 @@ Odata.prototype.or = function(field, op, value)
 Odata.prototype.not = function(field, op, value)
 {
   return this.filter(`not ${new Expression(field, op, value).toString()}`);
+};
+
+Odata.prototype.all = function(field, property, op, value)
+{
+  return this.filter(new Lambda('all', field, `p${this._nextLambda++}`, property), op, value);
+};
+
+Odata.prototype.any = function(field, property, op, value)
+{
+  return this.filter(new Lambda('any', field, `p${this._nextLambda++}`, property), op, value);
 };
 
 Odata.prototype.resource = function(resource, value)
