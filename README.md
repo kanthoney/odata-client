@@ -19,7 +19,7 @@ q.top(5).skip(10).filter('Balance gt 5000').and('CreditLimit', '<', 10000).get()
 
 ## odata object
 
-* odata(config)
+* `odata(config)`
 
 The `odata(config)` function produces a query object for the construction of queries. `config` is an object 
 with the following options:
