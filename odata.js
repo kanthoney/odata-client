@@ -136,7 +136,11 @@ Odata.prototype.order = function(item, dir)
 Odata.prototype.expand = function(item)
 {
   this._expand = this._expand || [];
-  this._expand.push(item);
+  if(_.isArray(item)) {
+    Array.prototype.push.apply(this._expand, item);
+  } else {
+    Array.prototype.push.apply(this._expand, arguments);
+  }
   return this;
 };
 
