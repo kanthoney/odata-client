@@ -42,6 +42,7 @@ Expressions can be chained, eg
 ```
 expression('Balance', '>', 500').and('CreditLimit', '=', 0) // (Balance gt 500) and (CreditLimit eq 0)
 expression('Balance', '+', 1000).lt('CreditLimit') // (Balance add 1000) lt (CreditLimit)
+```
 
 ### `identifier(string)`
 ### `literal(string)`
