@@ -116,6 +116,10 @@ Adds a `$select` clause to the filter, e.g. `q.select('Account', 'Status')` prod
 
 Adds an item to `$expand`
 
+* `search(term)`
+
+Sets the term for `$search`.
+
 * `count`
 
 Adds a $count clause to the query

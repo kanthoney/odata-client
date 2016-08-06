@@ -140,6 +140,12 @@ Odata.prototype.expand = function(item)
   return this;
 };
 
+Odata.prototype.search = function(search)
+{
+  this._search = search;
+  return this;
+};
+
 Odata.prototype.custom = function(name, value)
 {
   if(value === undefined && _.isPlainObject(value)) {
@@ -188,6 +194,9 @@ Odata.prototype.query = function()
     addPart('$expand', _.map(this._expand, function(item) {
       return escape(item, true);
     }).join());
+  }
+  if(this._search) {
+    addPart('$search', this._search);
   }
   if(this._order !== undefined) {
     addPart('$orderby', this._order);
