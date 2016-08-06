@@ -25,8 +25,12 @@ describe('select tests', function() {
     expect(q.select(['Account', 'Status']).query()).toEqual('https://example.com/Customers?%24select=Account%2CStatus');
   });
 
-  it('should select several parameters', function() {
+  it('should select several parameters (method 2)', function() {
     expect(q.select('Account').select('Status').query()).toEqual('https://example.com/Customers?%24select=Account%2CStatus');
+  });
+
+  it('should select *', function() {
+    expect(q.select('*').query()).toEqual('https://example.com/Customers?%24select=*');
   });
 
 });
