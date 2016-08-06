@@ -133,6 +133,13 @@ Odata.prototype.order = function(item, dir)
   return this;
 };
 
+Odata.prototype.expand = function(item)
+{
+  this._expand = this._expand || [];
+  this._expand.push(item);
+  return this;
+};
+
 Odata.prototype.custom = function(name, value)
 {
   if(value === undefined && _.isPlainObject(value)) {
@@ -174,6 +181,11 @@ Odata.prototype.query = function()
   }
   if(this._select) {
     addPart('$select', _.map(this._select, function(item) {
+      return escape(item, true);
+    }).join());
+  }
+  if(this._expand) {
+    addPart('$expand', _.map(this._expand, function(item) {
       return escape(item, true);
     }).join());
   }
