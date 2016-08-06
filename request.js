@@ -2,5 +2,5 @@
 
 const Promise = require('bluebird');
 
-module.exports = Promise.promisify(request);
+module.exports = Promise.promisifyAll(require('request'));
 
