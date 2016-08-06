@@ -24,12 +24,12 @@ q.top(5).skip(10).filter('Balance gt 5000').and('CreditLimit', '<', 10000).get()
 The `odata(config)` function produces a query object for the construction of queries. `config` is an object 
 with the following options:
 
-1. `service` - the base URL of the service
+..1. `service` - the base URL of the service
 
-1. `resources` - the resource part of the URL for the query, e.g. `Customers` or `Customers('ACME01')/Orders`.
+..1. `resources` - the resource part of the URL for the query, e.g. `Customers` or `Customers('ACME01')/Orders`.
 You can also add resource parts using the `resource` method of the query function
 
-1. `custom` - optional object containing addition query parameters, e.g. `{access_token:'123456'}` will append 
+..1. `custom` - optional object containing addition query parameters, e.g. `{access_token:'123456'}` will append 
 `?access_token=123456` to the query URL.
 
 * `expression(left, op, right)`
@@ -71,14 +71,14 @@ Adds a `$skip=n` query parameter.
 
 Used for constructing `$filter` requests. There are several ways to call this method:
 
-1. If called with a string as the sole argument, the string is used as a literal filter, e.g.
+..1. If called with a string as the sole argument, the string is used as a literal filter, e.g.
 `q.filter("Account eq 'ACME01'")`
 
-1. If all three arguments are specified, `op` should be one of the usual odata operations such as `eq` or `add`,
+..1. If all three arguments are specified, `op` should be one of the usual odata operations such as `eq` or `add`,
 or the symbolic equivalents such as `=` or `+`. e.g. `q.filter('Account', '=', 'ACME01')`. The `left` and `right`
 arguments can be `odata.expression`s for building nested queries. 
 
-1. If called with two arguments, the operator is assumed to be `eq`, e.g. `q.filter('Account', 'ACME01')`
+..1. If called with two arguments, the operator is assumed to be `eq`, e.g. `q.filter('Account', 'ACME01')`
 
 The `left` argument is assumed to be an identifier while `right` is assumed to be a literal, which affects the
 quoting of strings.  You can override this behaviour with the `odata.literal` and `odata.identifier` functions, see above.
@@ -128,11 +128,11 @@ Adds a $count clause to the query
 
 Adds an `$orderby` clause to the query.  There are several ways to call this function:
 
-1. `q.order('Account')` produces `$orderby=Account`
+..1. `q.order('Account')` produces `$orderby=Account`
 
-1. `q.order('Account', 'desc')` produces `$orderby=Account desc`
+..1. `q.order('Account', 'desc')` produces `$orderby=Account desc`
 
-1. `q.order(['Status', 'desc'], ['Account'])` produces `$orderby=Status desc,Account`
+..1. `q.order(['Status', 'desc'], ['Account'])` produces `$orderby=Status desc,Account`
 
 * `custom(name, value)`
 
