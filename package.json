@@ -1,7 +1,7 @@
 {
   "name": "odata-client",
   "version": "0.0.0",
-  "description": "odata client",
+  "description": "odata client REST",
   "main": "odata.js",
   "scripts": {
     "test": "jasmine"
