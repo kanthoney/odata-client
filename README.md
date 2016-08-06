@@ -1,6 +1,6 @@
 # odata-client
 
-A promise based client library for accessing odata resources using node
+A client library for accessing odata resources using node.  HTTP queries return a promise.
 
 ## Installation
 
@@ -141,4 +141,11 @@ Produces the query string, e.g.
 ```
 odata({service: 'https://example.com/Customers'}).top(5).query() // 'https://example.com/Customers?$top=5'
 ```
+
+### `get`, `post`, `put`, `patch`, `delete`
+
+Perform an HTTP operation, returning a promise which resolves to an HTTP response.  Each function can take an `options`
+argument which is passed to the undelying [request](https://www.npmjs.com/package/request) library.
+
+
 

@@ -6,6 +6,7 @@ const Promise = require('bluebird');
 const escape = require('./escape');
 const Identifier = require('./identifier');
 const Literal = require('./literal');
+const request = require('./request');
 
 var Odata = function(config)
 {
@@ -185,6 +186,41 @@ Odata.prototype.query = function()
     });
   }
   return q;
+};
+
+Odata.prototype.get = function(options)
+{
+  options = options || {};
+  options.url = this.query();
+  return request.getAsync(options);
+};
+
+Odata.prototype.post = function(options)
+{
+  options = options || {};
+  options.url = this.query();
+  return request.postAsync(options);
+};
+
+Odata.prototype.put = function(options)
+{
+  options = options || {};
+  options.url = this.query();
+  return request.putAsync(options);
+};
+
+Odata.prototype.patch = function(options)
+{
+  options = options || {};
+  options.url = this.query();
+  return request.patchAsync(options);
+};
+
+Odata.prototype.delete = function(options)
+{
+  options = options || {};
+  options.url = this.query();
+  return request.deleteAsync(options);
 };
 
 module.exports = function(config)
