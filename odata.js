@@ -14,6 +14,13 @@ var Odata = function(config)
   this.service = config.service || '';
   this._resources = config.resources || '';
   this._custom = config.custom || {};
+  this._headers = config.headers || {};
+  if(config.version) {
+    this._headers['OData-Version'] = config.version;
+  }
+  if(config.maxVersion) {
+    this._headers['OData-MaxVersion'] = config.maxVersion;
+  }
   return this;
 };
 
@@ -174,8 +181,8 @@ Odata.prototype.query = function()
     sep = '&';
     return;
   };
-  if(this._format !== undefined && this._count === undefined && this._batch === undefined) {
-    addPart('$format', this._format);
+  if(this.config._format !== undefined && this._count === undefined) {
+    addPart('$format', this.config._format);
   }
   if(this._count) {
     addPart('$count');
@@ -217,6 +224,7 @@ Odata.prototype.get = function(options)
 {
   options = options || {};
   options.url = this.query();
+  options.headers = _.assign(options.headers || {}, this._headers);
   return request.getAsync(options);
 };
 
@@ -224,6 +232,7 @@ Odata.prototype.post = function(options)
 {
   options = options || {};
   options.url = this.query();
+  options.headers = _.assign(options.headers || {}, this._headers);
   return request.postAsync(options);
 };
 
@@ -231,6 +240,7 @@ Odata.prototype.put = function(options)
 {
   options = options || {};
   options.url = this.query();
+  options.headers = _.assign(options.headers || {}, this._headers);
   return request.putAsync(options);
 };
 
@@ -238,6 +248,7 @@ Odata.prototype.patch = function(options)
 {
   options = options || {};
   options.url = this.query();
+  options.headers = _.assign(options.headers || {}, this._headers);
   return request.patchAsync(options);
 };
 
@@ -245,6 +256,7 @@ Odata.prototype.delete = function(options)
 {
   options = options || {};
   options.url = this.query();
+  options.headers = _.assign(options.headers || {}, this._headers);
   return request.deleteAsync(options);
 };
 

@@ -3,7 +3,8 @@
 const odata = require('../odata');
 
 const config = {
-  service: 'http://services.odata.org/V4/OData/OData.svc'
+  service: 'http://services.odata.org/V4/OData/OData.svc',
+  maxVersion: '4.0'
 };
 
 describe('HTTP tests', function() {
