@@ -15,12 +15,12 @@ describe('count tests', function() {
   });
 
   it('should get a count of Customers', function() {
-    expect(odata.count().query()).toEqual('https://example.com/Customers?%24count');
+    expect(odata.count().query()).toEqual('https://example.com/Customers/%24count');
   });
 
   it('should get a count of Customers with balance > 1000', function() {
     expect(odata.filter('balance', '>', 1000).count().query())
-      .toEqual('https://example.com/Customers?%24count&%24filter=balance%20gt%201000');
+      .toEqual('https://example.com/Customers/%24count?%24filter=balance%20gt%201000');
   });
 
 });

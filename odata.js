@@ -8,13 +8,17 @@ const Identifier = require('./identifier');
 const Literal = require('./literal');
 const request = require('./request');
 const Lambda = require('./lambda');
+const url = require('url');
+const qs = require('querystring');
 
 var Odata = function(config)
 {
   this.config = config || {};
-  this.service = config.service || '';
-  this._resources = config.resources || '';
-  this._custom = config.custom || {};
+  this.qurl = url.parse(this.config.service || '');
+  if(config.resources) {
+    this.qurl.pathname += `${config.resources}`;
+  }
+  this._custom = _.assign(qs.parse(this.qurl.search), config.custom);
   this._headers = config.headers || {};
   this._nextLambda = 0;
   if(config.version) {
@@ -80,18 +84,19 @@ Odata.prototype.any = function(field, property, op, value)
 
 Odata.prototype.resource = function(resource, value)
 {
-  if(this._resources !== '') {
-    this._resources += '/';
+  if(this.qurl.pathname.substr(-1) === '/') {
+    this.qurl.pathname += `${resource}`;
+  } else {
+    this.qurl.pathname += `/${resource}`;
   }
-  this._resources += `${resource}`;
   if(value !== undefined) {
     if(_.isPlainObject(value)) {
       var clauses = _.map(_.keys(value), function(k) {
         return `${escape(k, true)}=${escape(value[k])}`;
       });
-      this._resources += `(${encodeURIComponent(clauses.join())})`;
+      this.qurl.pathname += `(${encodeURIComponent(clauses.join())})`;
     } else {
-      this._resources += `(${encodeURIComponent(escape(value))})`;
+      this.qurl.pathname += `(${encodeURIComponent(escape(value))})`;
     }
   }
   return this;
@@ -171,8 +176,8 @@ Odata.prototype.search = function(search)
 
 Odata.prototype.custom = function(name, value)
 {
-  if(value === undefined && _.isPlainObject(value)) {
-    _.assign(this._custom, value);
+  if(value === undefined && _.isPlainObject(name)) {
+    _.assign(this._custom, name);
   } else {
     _.assign(this._custom, {name: value});
   }
@@ -181,55 +186,48 @@ Odata.prototype.custom = function(name, value)
 
 Odata.prototype.query = function()
 {
-  var q = `${this.service}/${this._resources}`;
-  var sep = '?'
-  var addPart = function(name, value)
-  {
-    if(value === undefined) {
-      q += `${sep}${encodeURIComponent(name)}`;
-    } else {
-      q += `${sep}${encodeURIComponent(name)}=${encodeURIComponent(value)}`;
-    }
-    sep = '&';
-    return;
-  };
+  var params = this._custom;
   if(this._count) {
-    q += '/$count';
+    if(this.qurl.pathname.substr(-1) === '/') {
+      this.qurl.pathname += '%24/count';
+    } else {
+      this.qurl.pathname += '/%24count';
+    }
   }
   if(this.config._format !== undefined && this._count === undefined) {
-    addPart('$format', this.config._format);
+    params['$format'] = this.config._format;
   }
   if(this._top) {
-    addPart('$top', this._top);
+    params['$top'] = this._top;
   }
   if(this._skip) {
-    addPart('$skip', this._skip);
+    params['$skip'] = this._skip;
   }
   if(this._filter !== undefined) {
-    addPart('$filter', this._filter.toString());
+    params['$filter'] = this._filter.toString();
   }
   if(this._select) {
-    addPart('$select', _.map(this._select, function(item) {
+    params['$select'] = _.map(this._select, function(item) {
       return escape(item, true);
-    }).join());
+    }).join();
   }
   if(this._expand) {
-    addPart('$expand', _.map(this._expand, function(item) {
+    params['$expand'] = _.map(this._expand, function(item) {
       return escape(item, true);
-    }).join());
+    }).join();
   }
   if(this._search) {
-    addPart('$search', this._search);
+    params['$search'] = this._search;
   }
   if(this._order !== undefined) {
-    addPart('$orderby', this._order);
+    params['$orderby'] = this._order;
   }
   if(!_.isEmpty(this._custom)) {
     _.forOwn(this._custom, function(v, k) {
-      addPart(k, v);
+      params[k] = v;
     });
   }
-  return q;
+  return url.format(_.assign({}, this.qurl, {search: qs.stringify(params)}));
 };
 
 Odata.prototype.get = function(options)
