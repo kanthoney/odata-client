@@ -144,7 +144,7 @@ Sets the term for `$search`.
 
 * `count`
 
-Adds a $count clause to the query
+Adds a `$count` clause to the query
 
 * `orderby(item, dir)`
 
