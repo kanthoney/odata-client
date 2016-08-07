@@ -9,6 +9,7 @@ const Literal = require('./literal');
 const request = require('./request');
 const Lambda = require('./lambda');
 const Url = require('./url');
+const Batch = require('./batch');
 
 var Odata = function(config)
 {
@@ -198,6 +199,12 @@ Odata.prototype.addQueryParameter = function(name, value)
   return;
 };
 
+Odata.prototype.batch = function()
+{
+  this.batch = new Batch(this);
+  return this;
+};
+
 Odata.prototype.query = function()
 {
   if(this._count) {
@@ -237,42 +244,83 @@ Odata.prototype.query = function()
 Odata.prototype.get = function(options)
 {
   options = options || {};
+  if(this.batch) {
+    this.batch.get(options);
+    return this;
+  }
   options.url = this.query();
-  options.headers = _.assign(options.headers || {}, this._headers);
+  options.headers = _.assign({}, this._headers, options.headers);
   return request.getAsync(options);
 };
 
-Odata.prototype.post = function(options)
+Odata.prototype.post = function(body, options)
 {
   options = options || {};
+  if(this.batch) {
+    this.batch.post(body, options);
+    return this;
+  }
   options.url = this.query();
-  options.headers = _.assign(options.headers || {}, this._headers);
+  options.headers = _.assign({}, this._headers, options.headers);
+  options.body = body;
   return request.postAsync(options);
 };
 
-Odata.prototype.put = function(options)
+Odata.prototype.put = function(body, options)
 {
   options = options || {};
+  if(this.batch) {
+    this.batch.put(body, options);
+    return this;
+  }
   options.url = this.query();
-  options.headers = _.assign(options.headers || {}, this._headers);
+  options.headers = _.assign({}, this._headers, options.headers);
+  options.body = body;
   return request.putAsync(options);
 };
 
-Odata.prototype.patch = function(options)
+Odata.prototype.patch = function(body, options)
 {
   options = options || {};
+  if(this.batch) {
+    this.batch.patch(body, options);
+    return this;
+  }
   options.url = this.query();
-  options.headers = _.assign(options.headers || {}, this._headers);
+  options.headers = _.assign({}, this._headers, options.headers);
+  options.body = body;
   return request.patchAsync(options);
 };
 
 Odata.prototype.delete = function(options)
 {
   options = options || {};
+  if(this.batch) {
+    this.batch.delete(options);
+    return this;
+  }
   options.url = this.query();
-  options.headers = _.assign(options.headers || {}, this._headers);
+  options.headers = _.assign({}, this._headers, options.headers);
   return request.deleteAsync(options);
 };
+
+Odata.prototype.send = function()
+{
+  if(!this.batch) {
+    return this;
+  }
+  var u = this.url.clone();
+  u.addPathComponent('%24batch');
+  var options = {
+    url: u.get(),
+    headers: _.assign({},
+                      this._headers,
+                      {'Content-Type': `multipart-mixed; boundary=${this.batch.boundary}`}),
+    body: this.batch.body()
+  };
+  console.log(options);
+};
+  
 
 module.exports = function(config)
 {
