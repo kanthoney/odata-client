@@ -18,9 +18,7 @@ var Odata = function(config)
     this.url.addPathComponent(config.resources);
   }
   if(config.custom) {
-    _.forOwn(config.custom, function(v, k) {
-      this.url.addQueryParameter(v, k);
-    });
+    this.url.addQueryParameter(config.custom);
   }
   this._headers = config.headers || {};
   this._nextLambda = 0;
@@ -98,7 +96,7 @@ Odata.prototype.resource = function(resource, value)
       component += `(${encodeURIComponent(escape(value))})`;
     }
   }
-  this.url.addPathComponent(component);
+  this.addPathComponent(component);
   return this;
 };
 
@@ -176,42 +174,62 @@ Odata.prototype.search = function(search)
 
 Odata.prototype.custom = function(name, value)
 {
-  this.url.addQueryParameter(name, value);
+  this.addQueryParameter(name, value);
   return this;
+};
+
+Odata.prototype.addPathComponent = function(component)
+{
+  if(this.batch) {
+    this.batch.addPathComponent(component);
+  } else {
+    this.url.addPathComponent(component);
+  }
+  return;
+};
+
+Odata.prototype.addQueryParameter = function(name, value)
+{
+  if(this.batch) {
+    this.batch.addQueryParameter(name, value);
+  } else {
+    this.url.addQueryParameter(name, value);
+  }
+  return;
 };
 
 Odata.prototype.query = function()
 {
   if(this._count) {
-    this.url.addPathComponent('%24count');
+    this.addPathComponent('%24count');
   }
   if(this.config._format !== undefined && this._count === undefined) {
-    this.url.addQueryParameter('$format', this.config._format);
+    this.addQueryParameter('$format', this.config._format);
   }
   if(this._top) {
-    this.url.addQueryParameter('$top', this._top);
+    this.addQueryParameter('$top', this._top);
   }
   if(this._skip) {
-    this.url.addQueryParameter('$skip', this._skip);
+    this.addQueryParameter('$skip', this._skip);
   }
   if(this._filter !== undefined) {
-    this.url.addQueryParameter('$filter', this._filter.toString());
+    this.addQueryParameter('$filter', this._filter.toString());
   }
   if(this._select) {
-    this.url.addQueryParameter('$select', _.map(this._select, function(item) {
+    this.addQueryParameter('$select', _.map(this._select, function(item) {
       return escape(item, true);
     }).join());
   }
   if(this._expand) {
-    this.url.addQueryParameter('$expand', _.map(this._expand, function(item) {
+    this.addQueryParameter('$expand', _.map(this._expand, function(item) {
       return escape(item, true);
     }).join());
   }
   if(this._search) {
-    this.url.addQueryParameter('$search', this._search);
+    this.addQueryParameter('$search', this._search);
   }
   if(this._order !== undefined) {
-    this.url.addQueryParameter('$orderby', this._order);
+    this.addQueryParameter('$orderby', this._order);
   }
   return this.url.get();
 };
