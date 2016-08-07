@@ -203,5 +203,7 @@ will batch the queries `/Customers('ACME01')/Orders(1)` and `/Customers('ACME01'
 
 * `send`
 
-Will send a batched query.
+Will send a batched query, returning a promise that resolves to an HTTP response.
+
+
 
