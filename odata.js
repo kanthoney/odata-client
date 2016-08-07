@@ -8,17 +8,20 @@ const Identifier = require('./identifier');
 const Literal = require('./literal');
 const request = require('./request');
 const Lambda = require('./lambda');
-const url = require('url');
-const qs = require('querystring');
+const Url = require('./url');
 
 var Odata = function(config)
 {
   this.config = config || {};
-  this.qurl = url.parse(this.config.service || '');
+  this.url = new Url(this.config.service || '');
   if(config.resources) {
-    this.qurl.pathname += `${config.resources}`;
+    this.url.addPathComponent(config.resources);
   }
-  this._custom = _.assign(qs.parse(this.qurl.search), config.custom);
+  if(config.custom) {
+    _.forOwn(config.custom, function(v, k) {
+      this.url.addQueryParameter(v, k);
+    });
+  }
   this._headers = config.headers || {};
   this._nextLambda = 0;
   if(config.version) {
@@ -84,21 +87,18 @@ Odata.prototype.any = function(field, property, op, value)
 
 Odata.prototype.resource = function(resource, value)
 {
-  if(this.qurl.pathname.substr(-1) === '/') {
-    this.qurl.pathname += `${resource}`;
-  } else {
-    this.qurl.pathname += `/${resource}`;
-  }
+  var component = resource;
   if(value !== undefined) {
     if(_.isPlainObject(value)) {
       var clauses = _.map(_.keys(value), function(k) {
         return `${escape(k, true)}=${escape(value[k])}`;
       });
-      this.qurl.pathname += `(${encodeURIComponent(clauses.join())})`;
+      component += `(${encodeURIComponent(clauses.join())})`;
     } else {
-      this.qurl.pathname += `(${encodeURIComponent(escape(value))})`;
+      component += `(${encodeURIComponent(escape(value))})`;
     }
   }
+  this.url.addPathComponent(component);
   return this;
 };
 
@@ -176,58 +176,44 @@ Odata.prototype.search = function(search)
 
 Odata.prototype.custom = function(name, value)
 {
-  if(value === undefined && _.isPlainObject(name)) {
-    _.assign(this._custom, name);
-  } else {
-    _.assign(this._custom, {name: value});
-  }
+  this.url.addQueryParameter(name, value);
   return this;
 };
 
 Odata.prototype.query = function()
 {
-  var params = this._custom;
   if(this._count) {
-    if(this.qurl.pathname.substr(-1) === '/') {
-      this.qurl.pathname += '%24/count';
-    } else {
-      this.qurl.pathname += '/%24count';
-    }
+    this.url.addPathComponent('%24count');
   }
   if(this.config._format !== undefined && this._count === undefined) {
-    params['$format'] = this.config._format;
+    this.url.addQueryParameter('$format', this.config._format);
   }
   if(this._top) {
-    params['$top'] = this._top;
+    this.url.addQueryParameter('$top', this._top);
   }
   if(this._skip) {
-    params['$skip'] = this._skip;
+    this.url.addQueryParameter('$skip', this._skip);
   }
   if(this._filter !== undefined) {
-    params['$filter'] = this._filter.toString();
+    this.url.addQueryParameter('$filter', this._filter.toString());
   }
   if(this._select) {
-    params['$select'] = _.map(this._select, function(item) {
+    this.url.addQueryParameter('$select', _.map(this._select, function(item) {
       return escape(item, true);
-    }).join();
+    }).join());
   }
   if(this._expand) {
-    params['$expand'] = _.map(this._expand, function(item) {
+    this.url.addQueryParameter('$expand', _.map(this._expand, function(item) {
       return escape(item, true);
-    }).join();
+    }).join());
   }
   if(this._search) {
-    params['$search'] = this._search;
+    this.url.addQueryParameter('$search', this._search);
   }
   if(this._order !== undefined) {
-    params['$orderby'] = this._order;
+    this.url.addQueryParameter('$orderby', this._order);
   }
-  if(!_.isEmpty(this._custom)) {
-    _.forOwn(this._custom, function(v, k) {
-      params[k] = v;
-    });
-  }
-  return url.format(_.assign({}, this.qurl, {search: qs.stringify(params)}));
+  return this.url.get();
 };
 
 Odata.prototype.get = function(options)
