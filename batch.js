@@ -4,6 +4,7 @@ const uuid = require('uuid');
 const _ = require('lodash');
 const url = require('url');
 const qs = require('querystring');
+const mime = require('mimelib');
 
 var Batch = function(q)
 {
@@ -85,6 +86,9 @@ Batch.prototype.body = function()
     msg += `--${this.boundary}\r\n`;
     msg += 'Content-Type: application/http\r\n\r\n';
     msg += `${op.method} ${op.query} HTTP/1.1\r\n`;
+    _.forOwn(op.headers, function(v, k) {
+      msg += mime.foldLine(`${k}: ${v}`, 76) + '\r\n';
+    });
     if(op.body) {
       let buf, body = '';
       if(op.headers['Content-Type'] === undefined || _.isPlainObject(op.body)) {
@@ -96,9 +100,8 @@ Batch.prototype.body = function()
         msg += 'Content-Transfer-Encoding: base64\r\n';
         buf = Buffer(op.body.toString()).toString('base64');
       }
-      for(var i = 0; i < buf.length; i += 76) {
-        body += `${buf.substr(i, 76)}\r\n`;
-      }
+      
+      body = mime.foldLine(buf, 76, true);
       msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
     }
     msg += '\r\n';

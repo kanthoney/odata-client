@@ -318,7 +318,7 @@ Odata.prototype.send = function()
                       {'Content-Type': `multipart-mixed; boundary=${this.batch.boundary}`}),
     body: this.batch.body()
   };
-  console.log(options);
+  return request.postAsync(options);
 };
   
 
