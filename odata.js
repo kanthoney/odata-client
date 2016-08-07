@@ -193,11 +193,11 @@ Odata.prototype.query = function()
     sep = '&';
     return;
   };
+  if(this._count) {
+    q += '/$count';
+  }
   if(this.config._format !== undefined && this._count === undefined) {
     addPart('$format', this.config._format);
-  }
-  if(this._count) {
-    addPart('$count');
   }
   if(this._top) {
     addPart('$top', this._top);

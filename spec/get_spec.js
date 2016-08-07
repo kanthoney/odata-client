@@ -1,6 +1,7 @@
 'use script';
 
 const odata = require('../odata');
+const _ = require('lodash');
 
 const config = {
   service: 'http://services.odata.org/V4/OData/OData.svc',
@@ -67,6 +68,18 @@ describe('HTTP tests', function() {
         fail(err);
       })
       .finally(done);
+  });
+
+  it('should get count of products', function(done) {
+    q.resource('Products').count().get()
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200);
+        expect(_.isNumber(JSON.parse(response.body))).toBeTruthy();
+      })
+      .catch(function(err) {
+        fail(err);
+      })
+        .finally(done);
   });
 
 });
