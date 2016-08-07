@@ -181,8 +181,8 @@ Odata.prototype.custom = function(name, value)
 
 Odata.prototype.addPathComponent = function(component)
 {
-  if(this.batch) {
-    this.batch.addPathComponent(component);
+  if(this._batch) {
+    this._batch.addPathComponent(component);
   } else {
     this.url.addPathComponent(component);
   }
@@ -191,8 +191,8 @@ Odata.prototype.addPathComponent = function(component)
 
 Odata.prototype.addQueryParameter = function(name, value)
 {
-  if(this.batch) {
-    this.batch.addQueryParameter(name, value);
+  if(this._batch) {
+    this._batch.addQueryParameter(name, value);
   } else {
     this.url.addQueryParameter(name, value);
   }
@@ -201,7 +201,7 @@ Odata.prototype.addQueryParameter = function(name, value)
 
 Odata.prototype.batch = function()
 {
-  this.batch = new Batch(this);
+  this._batch = new Batch(this);
   return this;
 };
 
@@ -244,8 +244,8 @@ Odata.prototype.query = function()
 Odata.prototype.get = function(options)
 {
   options = options || {};
-  if(this.batch) {
-    this.batch.get(options);
+  if(this._batch) {
+    this._batch.get(options);
     return this;
   }
   options.url = this.query();
@@ -256,8 +256,8 @@ Odata.prototype.get = function(options)
 Odata.prototype.post = function(body, options)
 {
   options = options || {};
-  if(this.batch) {
-    this.batch.post(body, options);
+  if(this._batch) {
+    this._batch.post(body, options);
     return this;
   }
   options.url = this.query();
@@ -269,8 +269,8 @@ Odata.prototype.post = function(body, options)
 Odata.prototype.put = function(body, options)
 {
   options = options || {};
-  if(this.batch) {
-    this.batch.put(body, options);
+  if(this._batch) {
+    this._batch.put(body, options);
     return this;
   }
   options.url = this.query();
@@ -282,8 +282,8 @@ Odata.prototype.put = function(body, options)
 Odata.prototype.patch = function(body, options)
 {
   options = options || {};
-  if(this.batch) {
-    this.batch.patch(body, options);
+  if(this._batch) {
+    this._batch.patch(body, options);
     return this;
   }
   options.url = this.query();
@@ -295,8 +295,8 @@ Odata.prototype.patch = function(body, options)
 Odata.prototype.delete = function(options)
 {
   options = options || {};
-  if(this.batch) {
-    this.batch.delete(options);
+  if(this._batch) {
+    this._batch.delete(options);
     return this;
   }
   options.url = this.query();
@@ -306,7 +306,7 @@ Odata.prototype.delete = function(options)
 
 Odata.prototype.send = function()
 {
-  if(!this.batch) {
+  if(!this._batch) {
     return this;
   }
   var u = this.url.clone();
@@ -315,8 +315,8 @@ Odata.prototype.send = function()
     url: u.get(),
     headers: _.assign({},
                       this._headers,
-                      {'Content-Type': `multipart-mixed; boundary=${this.batch.boundary}`}),
-    body: this.batch.body()
+                      {'Content-Type': `multipart-mixed; boundary=${this._batch.boundary}`}),
+    body: this._batch.body()
   };
   return request.postAsync(options);
 };
