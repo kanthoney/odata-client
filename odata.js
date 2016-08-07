@@ -194,7 +194,7 @@ Odata.prototype.query = function()
     return;
   };
   if(this._count) {
-    q += '/$count';
+    q += '/%24count';
   }
   if(this.config._format !== undefined && this._count === undefined) {
     addPart('$format', this.config._format);
