@@ -173,8 +173,35 @@ Produces the query string, e.g.
 odata({service: 'https://example.com/Customers'}).top(5).query() // 'https://example.com/Customers?$top=5'
 ```
 
-* `get`, `post`, `put`, `patch`, `delete`
+* `get(options)`
+* `post(body, options)`
+* `put(body, options)`
+* `patch(body, options)`
+* `delete(options)`
 
-Perform an HTTP operation, returning a promise which resolves to an HTTP response.  Each function can take an `options`
-argument which is passed to the undelying [request](https://www.npmjs.com/package/request) library.
+Perform an HTTP operation. For non-batched queries, these will return a promise which resolves to an HTTP response.
+The `options` argument is passed to the undelying [request](https://www.npmjs.com/package/request) library.
+
+For batched queries, requests are accumulated into a single document which is sent with the `send` function.
+
+* `batch`
+
+Sets up [batch processing](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752313).
+When batch processing is enabled and a HTTP request function is called, instead of being sent immediately the request is held in a queue.
+When the `send` function is called, all the requests are sent in one document.
+
+The code
+
+```
+q.resource('Customers', 'ACME01').batch();
+q.resource('Orders', 1).get();
+q.resource('Orders', 2).get();
+q.send();
+```
+
+will batch the queries `/Customers('ACME01')/Orders(1)` and `/Customers('ACME01')/Orders(2)` into one and send them as one document.
+
+* `send`
+
+Will send a batched query.
 
