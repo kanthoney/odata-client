@@ -31,20 +31,6 @@ Batch.prototype.addQueryParameter = function(name, value)
   this.url.addQueryParameter(name, value);
 };
 
-var process = function(method, options, body)
-{
-  options = options || {};
-  if(options.qs) {
-    this.url.addQueryParameters(options.qs);
-  }
-  return {
-    method: method,
-    query: this.query(),
-    headers: options.headers || {},
-    body: body
-  }
-};
-
 Batch.prototype.reset = function()
 {
   if(this.parent._filter) {
@@ -75,6 +61,20 @@ Batch.prototype.reset = function()
   }
   this.config = this.parent.config;
   this.url = this.parent.url.clone();
+};
+
+var process = function(method, options, body)
+{
+  options = options || {};
+  if(options.qs) {
+    this.url.addQueryParameters(options.qs);
+  }
+  return {
+    method: method,
+    query: this.query(),
+    headers: options.headers || {},
+    body: body
+  }
 };
 
 Batch.prototype.get = function(options)
