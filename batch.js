@@ -127,7 +127,8 @@ Batch.prototype.body = function()
         if(last_changeset) {
           msg += `--${last_changeset}--\r\n`;
         }
-        msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n\r\n`;
+        msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n`;
+        msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
         msg += `--${op.changeset}\r\n`;
       }
     } else {
@@ -148,17 +149,17 @@ Batch.prototype.body = function()
       let buf = '';
       if(op.headers['Content-Type'] === undefined || _.isPlainObject(op.body)) {
         msg += 'Content-Type: application/json\r\n';
-        msg += 'Content-Transfer-Encoding: base64\r\n';
-        buf = Buffer(JSON.stringify(op.body)).toString('base64');
+        msg += 'Content-Transfer-Encoding: binary\r\n';
+        buf = JSON.stringify(op.body);
       } else {
         msg += `Content-Type: ${op.headers['Content-Type']}\r\n`;
-        msg += 'Content-Transfer-Encoding: base64\r\n';
-        buf = Buffer(op.body.toString()).toString('base64');
+        msg += 'Content-Transfer-Encoding: binary\r\n';
+        buf = op.body.toString();
       }
       
-      body = `${mime.foldLine(buf, 76, true)}\r\n`;
+      body = `${buf}`;
     }
-    msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
+    msg += `Content-Length: ${body.length}\r\n\r\n${body}\r\n`;
   }
   if(last_changeset) {
     msg += `--${last_changeset}--\r\n`;
