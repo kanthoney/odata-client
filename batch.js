@@ -119,7 +119,7 @@ Batch.prototype.delete = function(options)
 
 Batch.prototype.body = function()
 {
-  var msg = '';
+  var msg = `--${this.boundary\r\n}`;
   var last_changeset = '';
   for(let op of this.ops) {
     if(op.changeset) {
@@ -160,9 +160,7 @@ Batch.prototype.body = function()
     }
     msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
   }
-  if(this.ops.length > 0) {
-    msg += `--${this.boundary}--`;
-  }
+  msg += `--${this.boundary}--`;
   return msg;
 };
 
