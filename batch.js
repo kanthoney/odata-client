@@ -58,9 +58,8 @@ Batch.prototype.reset = function()
   } else {
     delete this._search;
   }
-  //this.config = this.parent.config;
+  this.config = this.parent.config;
   this.url = this.parent.url.clone();
-  delete this.url.params;
 };
 
 var process = function(method, options, body)
