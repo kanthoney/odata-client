@@ -9,7 +9,7 @@ describe('top query', function() {
 
   var odata;
   beforeEach(function() {
-    odata = require('../odata.js')(config);
+    odata = require('../index')(config);
   });
 
   it('should set a top value of 5', function() {

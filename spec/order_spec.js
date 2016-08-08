@@ -1,6 +1,6 @@
 'use strict';
 
-const Odata = require('../odata');
+const Odata = require('../index');
 
 const config = {
   service: 'https://example.com',

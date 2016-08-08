@@ -1,6 +1,6 @@
 'use script';
 
-const odata = require('../odata');
+const odata = require('../index');
 const _ = require('lodash');
 
 const config = {

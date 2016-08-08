@@ -322,23 +322,4 @@ Odata.prototype.send = function()
 };
   
 
-module.exports = function(config)
-{
-  return new Odata(config);
-};
-
-module.exports.expression = function(field, op, value)
-{
-  return new Expression(field, op, value);
-};
-
-module.exports.identifier = function(value)
-{
-  return new Identifier(value);
-};
-
-module.exports.literal = function(value)
-{
-  return new Literal(value);
-};
-
+module.exports = Odata;
