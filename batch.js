@@ -18,7 +18,6 @@ var Batch = function(parent)
   return this;
 };
 
-console.log(Odata);
 util.inherits(Batch, Odata);
 
 Batch.prototype.addPathComponent = function(component)
