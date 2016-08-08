@@ -66,6 +66,11 @@ Batch.prototype.reset = function()
 var process = function(method, options, body)
 {
   options = options || {};
+  if(method === 'GET') {
+    delete this._changeset;
+  } else {
+    this._changeset = this._changeset || `changeset_${uuid.v4()}`;
+  }
   if(options.qs) {
     this.url.addQueryParameters(options.qs);
   }
@@ -73,7 +78,8 @@ var process = function(method, options, body)
     method: method,
     query: this.query(),
     headers: options.headers || {},
-    body: body
+    body: body,
+    changeset: this._changeset
   }
 };
 
@@ -115,8 +121,23 @@ Batch.prototype.delete = function(options)
 Batch.prototype.body = function()
 {
   var msg = '';
+  var last_changeset = '';
   for(let op of this.ops) {
-    msg += `--${this.boundary}\r\n`;
+    if(op.changeset) {
+      if(op.changeset != last_changeset) {
+        if(last_changeset) {
+          msg += `--${last_changeset}--\r\n`;
+        }
+        msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n\r\n`;
+        msg += `--${op.changeset}\r\n`;
+      }
+    } else {
+      if(last_changeset) {
+        msg += `--${last_changeset}--\r\n`;
+      }
+      msg += `--${this.boundary}\r\n`;
+    }
+    last_changeset = op.changeset;
     msg += 'Content-Type: application/http\r\n';
     msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
     msg += `${op.method} ${op.query} HTTP/1.1\r\n`;
