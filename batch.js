@@ -119,7 +119,7 @@ Batch.prototype.delete = function(options)
 
 Batch.prototype.body = function()
 {
-  var msg = `--${this.boundary\r\n}`;
+  var msg = `--${this.boundary}\r\n`;
   var last_changeset = '';
   for(let op of this.ops) {
     if(op.changeset) {
