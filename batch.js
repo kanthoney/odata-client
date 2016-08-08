@@ -160,7 +160,10 @@ Batch.prototype.body = function()
     }
     msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
   }
-  msg += `--${this.boundary}--`;
+  if(last_changeset) {
+    msg += `--${last_changeset}--\r\n`;
+  }
+  msg += `--${this.boundary}--\r\n`;
   return msg;
 };
 
