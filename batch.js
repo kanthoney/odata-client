@@ -121,8 +121,9 @@ Batch.prototype.body = function()
     _.forOwn(op.headers, function(v, k) {
       msg += mime.foldLine(`${k}: ${v}`, 76) + '\r\n';
     });
+    let body = '';
     if(op.body) {
-      let buf, body = '';
+      let buf = '';
       if(op.headers['Content-Type'] === undefined || _.isPlainObject(op.body)) {
         msg += 'Content-Type: application/json\r\n';
         msg += 'Content-Transfer-Encoding: base64\r\n';
@@ -134,11 +135,12 @@ Batch.prototype.body = function()
       }
       
       body = `${mime.foldLine(buf, 76, true)}\r\n`;
-      msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
     }
-    msg += '\r\n';
+    msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
   }
-  msg += `--${this.boundary}--`;
+  if(this.ops.length > 0) {
+    msg += `--${this.boundary}--`;
+  }
   return msg;
 };
 

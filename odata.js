@@ -253,8 +253,8 @@ Odata.prototype.query = function()
   if(this._count) {
     this.addPathComponent('%24count');
   }
-  if((this.config && this.config._format) !== undefined && this._count === undefined) {
-    this.addQueryParameter('$format', this.config._format);
+  if((this.config && this.config.format) !== undefined && this._count === undefined) {
+    this.addQueryParameter('$format', this.config.format);
   }
   if(this._filter !== undefined) {
     this.addQueryParameter('$filter', this._filter.toString());
@@ -360,7 +360,7 @@ Odata.prototype.send = function()
     url: u.get(),
     headers: _.assign({},
                       this._headers,
-                      {'Content-Type': `multipart-mixed; boundary=${this._batch.boundary}`}),
+                      {'Content-Type': `multipart/mixed; boundary=${this._batch.boundary}`}),
     body: this._batch.body()
   };
   return request.postAsync(options);
