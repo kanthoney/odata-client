@@ -149,11 +149,11 @@ Batch.prototype.body = function()
       let buf = '';
       if(op.headers['Content-Type'] === undefined || _.isPlainObject(op.body)) {
         msg += 'Content-Type: application/json\r\n';
-        msg += 'Content-Transfer-Encoding: binary\r\n';
+        //msg += 'Content-Transfer-Encoding: binary\r\n';
         buf = JSON.stringify(op.body);
       } else {
         msg += `Content-Type: ${op.headers['Content-Type']}\r\n`;
-        msg += 'Content-Transfer-Encoding: binary\r\n';
+        //msg += 'Content-Transfer-Encoding: binary\r\n';
         buf = op.body.toString();
       }
       
