@@ -73,6 +73,7 @@ Batch.prototype.reset = function()
   } else {
     delete this._search;
   }
+  this.config = this.parent.config;
   this.url = this.parent.url.clone();
 };
 
@@ -116,7 +117,8 @@ Batch.prototype.body = function()
   var msg = '';
   for(let op of this.ops) {
     msg += `--${this.boundary}\r\n`;
-    msg += 'Content-Type: application/http\r\n\r\n';
+    msg += 'Content-Type: application/http\r\n';
+    msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
     msg += `${op.method} ${op.query} HTTP/1.1\r\n`;
     _.forOwn(op.headers, function(v, k) {
       msg += mime.foldLine(`${k}: ${v}`, 76) + '\r\n';
