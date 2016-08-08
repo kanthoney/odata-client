@@ -127,7 +127,11 @@ Odata.prototype.resource = function(resource, value)
 Odata.prototype.select = function(items)
 {
   if(this._batch) {
-    this._batch.select(items);
+    if(_.isArray(items)) {
+      this._batch.select(items);
+    } else {
+      this._batch.select(Array.prototype.slice.call(arguments));
+    }
     return this;
   }
   this._select = this._select || [];
