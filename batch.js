@@ -5,15 +5,21 @@ const _ = require('lodash');
 const url = require('url');
 const qs = require('querystring');
 const mime = require('mimelib');
+const Odata = require('./odata');
+const util = require('util');
+const Expression = require('./expression');
 
-var Batch = function(q)
+var Batch = function(parent)
 {
-  this.query = q;
-  this.url = q.url.clone();
+  this.parent = parent;
   this.boundary = `batch_${uuid.v4()}`;
   this.ops = [];
+  this.reset();
   return this;
 };
+
+console.log(Odata);
+util.inherits(Batch, Odata);
 
 Batch.prototype.addPathComponent = function(component)
 {
@@ -33,7 +39,7 @@ var process = function(method, options, body)
   }
   return {
     method: method,
-    query: this.url.get(),
+    query: this.query(),
     headers: options.headers || {},
     body: body
   }
@@ -41,7 +47,25 @@ var process = function(method, options, body)
 
 Batch.prototype.reset = function()
 {
-  this.url = this.query.url.clone();
+  if(this.parent._filter) {
+    this._filter = new Expression(this.parent._filter);
+  }
+  if(this.parent._select) {
+    this._select = _.slice(this.parent._select);
+  }
+  if(this.parent._count) {
+    this._count = this.parent._count;
+  }
+  if(this.parent._order) {
+    this._order = this.prent._order;
+  }
+  if(this.parent._expand) {
+    this._expand = this.parent._expand;
+  }
+  if(this.parent._search) {
+    this._search = this.parent._search;
+  }
+  this.url = this.parent.url.clone();
 };
 
 Batch.prototype.get = function(options)
@@ -60,7 +84,7 @@ Batch.prototype.post = function(body, options)
 
 Batch.prototype.put = function(body, options)
 {
-  this.ops.push(process.call(this, 'PUT', q, options, body));
+  this.ops.push(process.call(this, 'PUT', options, body));
   this.reset();
   return;
 }
@@ -101,7 +125,7 @@ Batch.prototype.body = function()
         buf = Buffer(op.body.toString()).toString('base64');
       }
       
-      body = mime.foldLine(buf, 76, true);
+      body = `${mime.foldLine(buf, 76, true)}\r\n`;
       msg += `Content-Length: ${body.length}\r\n\r\n${body}`;
     }
     msg += '\r\n';

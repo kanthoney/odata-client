@@ -9,7 +9,6 @@ const Literal = require('./literal');
 const request = require('./request');
 const Lambda = require('./lambda');
 const Url = require('./url');
-const Batch = require('./batch');
 
 var Odata = function(config)
 {
@@ -34,22 +33,26 @@ var Odata = function(config)
 
 Odata.prototype.top = function(top)
 {
-  this._top = top;
+  this.addQueryParameter('$top', top);
   return this;
 };
 
 Odata.prototype.skip = function(skip)
 {
-  this._skip = skip;
+  this.addQueryParameter('$skip', skip);
   return this;
 };
 
 Odata.prototype.filter = function(field, op, value)
 {
-  if(this._filter) {
-    this._filter = this._filter.and(new Expression(field, op, value));
+  if(this._batch) {
+    this._batch.filter(field, op, value);
   } else {
-    this._filter = new Expression(field, op, value);
+    if(this._filter) {
+      this._filter = this._filter.and(new Expression(field, op, value));
+    } else {
+      this._filter = new Expression(field, op, value);
+    }
   }
   return this;
 };
@@ -61,31 +64,51 @@ Odata.prototype.and = function(field, op, value)
 
 Odata.prototype.or = function(field, op, value)
 {
-  if(this._filter) {
-    this._filter = this._filter.or(new Expression(filter, op, value));
+  if(this._batch) {
+    this._batch.or(field. op, value);
   } else {
-    this._filter = new Expression(field, op, value);
+    if(this._filter) {
+      this._filter = this._filter.or(new Expression(filter, op, value));
+    } else {
+      this._filter = new Expression(field, op, value);
+    }
   }
   return this;
 };
 
 Odata.prototype.not = function(field, op, value)
 {
+  if(this._batch) {
+    this._batch.not(field, op, value);
+    return this;
+  }
   return this.filter(`not ${new Expression(field, op, value).toString()}`);
 };
 
 Odata.prototype.all = function(field, property, op, value)
 {
+  if(this._batch) {
+    this._batch.all(field, property, op, value);
+    return this;
+  }
   return this.filter(new Lambda('all', field, `p${this._nextLambda++}`, property), op, value);
 };
 
 Odata.prototype.any = function(field, property, op, value)
 {
+  if(this._batch) {
+    this._batch.any(field, property, op, value);
+    return this;
+  }
   return this.filter(new Lambda('any', field, `p${this._nextLambda++}`, property), op, value);
 };
 
 Odata.prototype.resource = function(resource, value)
 {
+  if(this._batch) {
+    this._batch.resource(resource, value);
+    return this;
+  }
   var component = resource;
   if(value !== undefined) {
     if(_.isPlainObject(value)) {
@@ -103,6 +126,10 @@ Odata.prototype.resource = function(resource, value)
 
 Odata.prototype.select = function(items)
 {
+  if(this._batch) {
+    this._batch.select(items);
+    return this;
+  }
   this._select = this._select || [];
   if(_.isArray(items)) {
     Array.prototype.push.apply(this._select, items);
@@ -114,12 +141,20 @@ Odata.prototype.select = function(items)
 
 Odata.prototype.count = function()
 {
+  if(this._batch) {
+    this._batch.count();
+    return this;
+  }
   this._count = true;
   return this;
 };
 
 Odata.prototype.orderby = function(item, dir)
 {
+  if(this._batch) {
+    this._batch.orderby(item, dir);
+    return this;
+  }
   var self = this;
   this._order = this._order || '';
   var add = function(item, dir) {
@@ -158,6 +193,10 @@ Odata.prototype.orderby = function(item, dir)
 
 Odata.prototype.expand = function(item)
 {
+  if(this._batch) {
+    this._batch.expand(item);
+    return this;
+  }
   this._expand = this._expand || [];
   if(_.isArray(item)) {
     Array.prototype.push.apply(this._expand, item);
@@ -169,6 +208,10 @@ Odata.prototype.expand = function(item)
 
 Odata.prototype.search = function(search)
 {
+  if(this._batch) {
+    return this._batch.search(search);
+    return this;
+  }
   this._search = search;
   return this;
 };
@@ -201,7 +244,7 @@ Odata.prototype.addQueryParameter = function(name, value)
 
 Odata.prototype.batch = function()
 {
-  this._batch = new Batch(this);
+  this._batch = new require('./batch')(this);
   return this;
 };
 
@@ -210,14 +253,8 @@ Odata.prototype.query = function()
   if(this._count) {
     this.addPathComponent('%24count');
   }
-  if(this.config._format !== undefined && this._count === undefined) {
+  if((this.config && this.config._format) !== undefined && this._count === undefined) {
     this.addQueryParameter('$format', this.config._format);
-  }
-  if(this._top) {
-    this.addQueryParameter('$top', this._top);
-  }
-  if(this._skip) {
-    this.addQueryParameter('$skip', this._skip);
   }
   if(this._filter !== undefined) {
     this.addQueryParameter('$filter', this._filter.toString());
@@ -304,6 +341,14 @@ Odata.prototype.delete = function(options)
   return request.deleteAsync(options);
 };
 
+Odata.prototype.body = function()
+{
+  if(this._batch) {
+    return this._batch.body();
+  }
+  return '';
+};
+
 Odata.prototype.send = function()
 {
   if(!this._batch) {
@@ -321,5 +366,5 @@ Odata.prototype.send = function()
   return request.postAsync(options);
 };
   
-
 module.exports = Odata;
+
