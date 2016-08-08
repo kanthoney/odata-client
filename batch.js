@@ -49,21 +49,29 @@ Batch.prototype.reset = function()
 {
   if(this.parent._filter) {
     this._filter = new Expression(this.parent._filter);
+  } else {
+    delete this._filter;
   }
   if(this.parent._select) {
     this._select = _.slice(this.parent._select);
+  } else {
+    delete this._select;
   }
-  if(this.parent._count) {
-    this._count = this.parent._count;
-  }
+  this._count = this.parent._count;
   if(this.parent._order) {
     this._order = this.prent._order;
+  } else {
+    delete this._order;
   }
   if(this.parent._expand) {
     this._expand = this.parent._expand;
+  } else {
+    delete this._expand;
   }
   if(this.parent._search) {
     this._search = this.parent._search;
+  } else {
+    delete this._search;
   }
   this.url = this.parent.url.clone();
 };
