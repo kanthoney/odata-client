@@ -303,7 +303,12 @@ Odata.prototype.post = function(body, options)
   }
   options.url = this.query();
   options.headers = _.assign({}, this._headers, options.headers);
-  options.body = body;
+  if(_.isPlainObject(body)) {
+    options.body = JSON.stringify(body);
+    options.headers['Content-Type'] = 'application/json';
+  } else {
+    options.body = body;
+  }
   return request.postAsync(options);
 };
 
@@ -316,7 +321,12 @@ Odata.prototype.put = function(body, options)
   }
   options.url = this.query();
   options.headers = _.assign({}, this._headers, options.headers);
-  options.body = body;
+  if(_.isPlainObject(body)) {
+    options.body = JSON.stringify(body);
+    options.headers['Content-Type'] = 'application/json';
+  } else {
+    options.body = body;
+  }
   return request.putAsync(options);
 };
 
@@ -329,7 +339,12 @@ Odata.prototype.patch = function(body, options)
   }
   options.url = this.query();
   options.headers = _.assign({}, this._headers, options.headers);
-  options.body = body;
+  if(_.isPlainObject(body)) {
+    options.body = JSON.stringify(body);
+    options.headers['Content-Type'] = 'application/json';
+  } else {
+    options.body = body;
+  }
   return request.patchAsync(options);
 };
 
