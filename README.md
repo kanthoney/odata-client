@@ -180,9 +180,15 @@ odata({service: 'https://example.com/Customers'}).top(5).query() // 'https://exa
 * `delete(options)`
 
 Perform an HTTP operation. For non-batched queries, these will return a promise which resolves to an HTTP response.
-The `options` argument is passed to the undelying [request](https://www.npmjs.com/package/request) library.
+The `options` argument is passed to the underlying [request](https://www.npmjs.com/package/request) library.
 
 For batched queries, requests are accumulated into a single document which is sent with the `send` function.
+
+As a convenience when using batch functions, the `content_id` property of `options` is copied to the `Content-ID` header, e.g.
+
+```
+q.batch()...get({content_id: 1})
+```
 
 * `batch`
 
