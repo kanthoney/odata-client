@@ -129,8 +129,8 @@ Batch.prototype.body = function()
         }
         msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n`;
         msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
-        msg += `--${op.changeset}\r\n`;
       }
+      msg += `--${op.changeset}\r\n`;
     } else {
       if(last_changeset) {
         msg += `--${last_changeset}--\r\n`;
