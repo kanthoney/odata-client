@@ -119,7 +119,7 @@ Batch.prototype.delete = function(options)
 
 Batch.prototype.body = function()
 {
-  var msg = `--${this.boundary}\r\n`;
+  var msg = '';
   var last_changeset = '';
   for(let op of this.ops) {
     if(op.changeset) {
@@ -127,6 +127,7 @@ Batch.prototype.body = function()
         if(last_changeset) {
           msg += `--${last_changeset}--\r\n`;
         }
+        msg += `--${this.boundary}\r\n`;
         msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n`;
         msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
       }
@@ -164,7 +165,9 @@ Batch.prototype.body = function()
   if(last_changeset) {
     msg += `--${last_changeset}--\r\n`;
   }
-  msg += `--${this.boundary}--\r\n`;
+  if(this.ops.length > 0) {
+    msg += `--${this.boundary}--\r\n`;
+  }
   return msg;
 };
 
