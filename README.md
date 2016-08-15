@@ -32,9 +32,9 @@ You can also add resource parts using the `resource` method of the query functio
   1. `custom` - optional object containing addition query parameters, e.g. `{access_token:'123456'}` will append 
 `?access_token=123456` to the query URL.
 
-  1. `version` - set OData-Version HTTP header
+  1. `version` - set `OData-Version` HTTP header
 
-  1. `maxVersion` - set OData-MaxVersion HTTP header
+  1. `maxVersion` - set `OData-MaxVersion` HTTP header
 
   1. `format` - specify response format (e.g. `json`)
 
