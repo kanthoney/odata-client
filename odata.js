@@ -285,6 +285,10 @@ Odata.prototype.query = function()
 Odata.prototype.get = function(options)
 {
   options = options || {};
+  options.headers = options.headers || {};
+  if(options.content_id) {
+    options.headers['Content-ID'] = options.content_id;
+  }
   if(this._batch) {
     this._batch.get(options);
     return this;
@@ -297,6 +301,10 @@ Odata.prototype.get = function(options)
 Odata.prototype.post = function(body, options)
 {
   options = options || {};
+  options.headers = options.headers || {};
+  if(options.content_id) {
+    options.headers['Content-ID'] = options.content_id;
+  }
   if(this._batch) {
     this._batch.post(body, options);
     return this;
@@ -315,6 +323,10 @@ Odata.prototype.post = function(body, options)
 Odata.prototype.put = function(body, options)
 {
   options = options || {};
+  options.headers = options.headers || {};
+  if(options.content_id) {
+    options.headers['Content-ID'] = options.content_id;
+  }
   if(this._batch) {
     this._batch.put(body, options);
     return this;
@@ -333,6 +345,10 @@ Odata.prototype.put = function(body, options)
 Odata.prototype.patch = function(body, options)
 {
   options = options || {};
+  options.headers = options.headers || {};
+  if(options.content_id) {
+    options.headers['Content-ID'] = options.content_id;
+  }
   if(this._batch) {
     this._batch.patch(body, options);
     return this;
@@ -351,6 +367,10 @@ Odata.prototype.patch = function(body, options)
 Odata.prototype.delete = function(options)
 {
   options = options || {};
+  options.headers = options.headers || {};
+  if(options.content_id) {
+    options.headers['Content-ID'] = options.content_id;
+  }
   if(this._batch) {
     this._batch.delete(options);
     return this;
