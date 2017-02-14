@@ -1,4 +1,4 @@
-'use script';
+'use strict';
 
 const odata = require('../index');
 const _ = require('lodash');
