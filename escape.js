@@ -24,6 +24,9 @@ var escape = function(s, noquote)
     });
     return `[${els.join()}]`;
   }
+  if(s instanceof Date) {
+    return s.toISOString();
+  }
   if(_.isPlainObject(s)) {
     var els = _.map(_.toPairs(s), function(el) {
       return `${escape(el[0], true)}:${escape(el[1])}`;
