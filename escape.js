@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const identifier = require('./identifier');
+const Function = require('./function');
 
 var escape = function(s, noquote)
 {
@@ -14,6 +15,9 @@ var escape = function(s, noquote)
   }
   if(s instanceof identifier) {
     return escape(s.toString(), true);
+  }
+  if(s instanceof Function) {
+    return `${s.name}(${_.map(s.args, (v, k) => { return `${k}=${escape(v)}`; })})`;
   }
   if(_.isNull(s)) {
     return 'null';

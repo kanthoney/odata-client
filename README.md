@@ -61,6 +61,15 @@ methods allow you to override this. e.g.
 q.filter(odata.literal('Customer'), '=', odata.identifer('Type')) // $filter='Customer' eq Type
 ```
 
+* `fn(name, args)`
+
+A `fn` method produces a function for use in a filter or expression. `name` is the name of the function while `args` is an object with the objwct keys
+being the parameter names. e.g.
+
+```
+q.filter(odata.fn('SalesRegion', { City: odata.identifier('$it/City') }), '=', 'West'); // $filter=SalesRegion(City=$it/City) eq 'West'
+```
+
 ## query object
 
 The query object has the following methods:
@@ -128,6 +137,14 @@ Adds a new part to the resource section. e.g.
 odata({service: 'https://example.com'}).resource('Customers').resource('Orders'); // https://example.com/Customers/Orders
 odata({service: 'https://example.com'}).resource('Customers', 'ACME01').resource('Orders'); // https://example.com/Customers('ACME01')/Orders
 odata({service: 'https://example.com'}).resource('Customers', {account:'ACME01'}).resource('Orders'); // https://example.com/Customers(account='ACME01')/Orders
+```
+
+* `fn(name, args)`
+
+Add a function component to the resource section. `name` is the name of the function whereas `args` is an object with the keys being the parameter names. e.g.
+
+```
+odata({service: 'https://example.com'}).function('Customer', { Account: 'ACME01' }); // https://example.com/Customer(Account='ACME01')
 ```
 
 * `select(items)`

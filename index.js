@@ -4,6 +4,7 @@ const Odata = require('./odata');
 const Identifier = require('./identifier');
 const Literal = require('./literal');
 const Expression = require('./expression');
+const Function = require('./function');
 
 module.exports = function(config)
 {
@@ -24,4 +25,9 @@ module.exports.literal = function(value)
 {
   return new Literal(value);
 };
+
+module.exports.fn = function(name, args)
+{
+  return new Function(name, args);
+}
 
