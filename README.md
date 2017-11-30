@@ -144,7 +144,7 @@ odata({service: 'https://example.com'}).resource('Customers', {account:'ACME01'}
 Add a function component to the resource section. `name` is the name of the function whereas `args` is an object with the keys being the parameter names. e.g.
 
 ```
-odata({service: 'https://example.com'}).function('Customer', { Account: 'ACME01' }); // https://example.com/Customer(Account='ACME01')
+odata({service: 'https://example.com'}).fn('Customer', { Account: 'ACME01' }); // https://example.com/Customer(Account='ACME01')
 ```
 
 * `select(items)`
