@@ -3,6 +3,7 @@
 const _ = require('lodash');
 const identifier = require('./identifier');
 const exact = require('./exact');
+const Function = require('./function');
 
 var escape = function(s, noquote)
 {
@@ -19,6 +20,9 @@ var escape = function(s, noquote)
   if(s instanceof exact) {
     return s.toString();
   }
+  if(s instanceof Function) {
+    return `${s.name}(${_.map(s.args, (v, k) => { return `${k}=${escape(v)}`; })})`;
+  }
   if(_.isNull(s)) {
     return 'null';
   }
@@ -27,6 +31,9 @@ var escape = function(s, noquote)
       return `${escape(el)}`;
     });
     return `[${els.join()}]`;
+  }
+  if(s instanceof Date) {
+    return s.toISOString();
   }
   if(_.isPlainObject(s)) {
     var els = _.map(_.toPairs(s), function(el) {

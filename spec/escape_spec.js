@@ -46,5 +46,9 @@ describe('escape value tests', function() {
     expect(escape(new exact('a\''))).toEqual('a\'');
   });
 
+  it('should escape date', () => {
+    expect(escape(new Date(Date.UTC(2017,9,20)))).toEqual('2017-10-20T00:00:00.000Z');
+  });
+
 });
 

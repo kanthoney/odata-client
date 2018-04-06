@@ -5,6 +5,7 @@ const Identifier = require('./identifier');
 const Literal = require('./literal');
 const Expression = require('./expression');
 const Exact = require('./exact');
+const Function = require('./function');
 
 module.exports = function(config)
 {
@@ -30,4 +31,9 @@ module.exports.exact = function(value)
 {
   return new Exact(value);
 };
+
+module.exports.fn = function(name, args)
+{
+  return new Function(name, args);
+}
 

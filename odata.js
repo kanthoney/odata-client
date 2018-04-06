@@ -124,6 +124,16 @@ Odata.prototype.resource = function(resource, value)
   return this;
 };
 
+Odata.prototype.fn = function(name, args)
+{
+  if(this._batch) {
+    this._batch.fn(name, args);
+    return this;
+  }
+  this.addPathComponent(encodeURIComponent(`${name}(${_.join(_.map(args || {}, (v, k) => { return `${k}=${escape(v)}`; }))})`));
+  return this;
+}
+
 Odata.prototype.select = function(items)
 {
   if(this._batch) {

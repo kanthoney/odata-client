@@ -80,5 +80,30 @@ describe('batch tests', function() {
         .finally(done);
   });
 
+  it('should post a new product', function(done) {
+    q.resource('Products').post({
+      "@odata.type":"#ODataDemo.FeaturedProduct",
+      ID: 100,
+      Name: 'Milk',
+      Description: 'Cow juice',
+      ReleaseDate: '2017-12-28',
+      DiscontinuedDate: null,
+      Rating: 1,
+      Price: 1.20
+    })
+      .then(function(response) {
+        q = Odata(config);
+        return q.resource('Products', 100).get();
+      })
+      .then(function(response) {
+        expect(response.statusCode).toEqual(200);
+        let json = JSON.parse(response.body);
+        expect(json.Name).toEqual('Milk');
+        expect(json.Description).toEqual('Cow juice');
+      })
+      .catch(fail)
+      .finally(done);
+  });
+
 });
 
