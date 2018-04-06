@@ -52,6 +52,7 @@ expression('Balance', '+', 1000).lt('CreditLimit') // (Balance add 1000) lt (Cre
 
 * `identifier(string)`
 * `literal(string)`
+* `exact(string)`
 
 In a filter expression part, the left argument is normally treated as an identifier (i.e., if it's a string it isn't
 surrounded by quotes) whereas the right argument is assumed to be a literal (strings are surrounded by quotes).  These 
@@ -60,6 +61,8 @@ methods allow you to override this. e.g.
 ```
 q.filter(odata.literal('Customer'), '=', odata.identifer('Type')) // $filter='Customer' eq Type
 ```
+
+`exact` allows you to place the string in the query exactly as intended.
 
 ## query object
 

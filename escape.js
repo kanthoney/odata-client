@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const identifier = require('./identifier');
+const exact = require('./exact');
 
 var escape = function(s, noquote)
 {
@@ -14,6 +15,9 @@ var escape = function(s, noquote)
   }
   if(s instanceof identifier) {
     return escape(s.toString(), true);
+  }
+  if(s instanceof exact) {
+    return s.toString();
   }
   if(_.isNull(s)) {
     return 'null';
