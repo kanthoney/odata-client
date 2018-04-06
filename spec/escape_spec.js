@@ -2,6 +2,7 @@
 
 const escape = require('../escape');
 const identifier = require('../identifier');
+const exact = require('../exact');
 
 describe('escape value tests', function() {
   
@@ -35,6 +36,14 @@ describe('escape value tests', function() {
 
   it('should escape identifier(\'a\')', function() {
     expect(escape(new identifier('a'))).toEqual('a');
+  });
+
+  it('should not escape exact(\'a\')', () => {
+    expect(escape(new exact('a'))).toEqual('a');
+  });
+
+  it('should not escape exact(\'a\\\'\')', () => {
+    expect(escape(new exact('a\''))).toEqual('a\'');
   });
 
 });
