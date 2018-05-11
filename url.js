@@ -8,7 +8,7 @@ var Url = function(u)
 {
   if(u) {
     this.qurl = url.parse(u);
-    this.params = qs.parse(this.qurl.search);
+    this.params = qs.parse(this.qurl.query);
   }
   return this;
 };
