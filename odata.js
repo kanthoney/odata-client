@@ -374,6 +374,29 @@ Odata.prototype.patch = function(body, options)
   return request.patchAsync(options);
 };
 
+Odata.prototype.merge = function(body, options)
+{
+  options = options || {};
+  options.headers = options.headers || {};
+  if(options.content_id) {
+    options.headers['Content-ID'] = options.content_id;
+  }
+  if(this._batch) {
+    this._batch.merge(body, options);
+    return this;
+  }
+  options.url = this.query();
+  options.headers = _.assign({}, this._headers, options.headers);
+  if(_.isPlainObject(body)) {
+    options.body = JSON.stringify(body);
+    options.headers['Content-Type'] = 'application/json';
+  } else {
+    options.body = body;
+  }
+  options.method = 'MERGE';
+  return Promise.promisify(request)(options);
+};
+
 Odata.prototype.delete = function(options)
 {
   options = options || {};

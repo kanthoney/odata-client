@@ -197,6 +197,7 @@ odata({service: 'https://example.com/Customers'}).top(5).query() // 'https://exa
 * `post(body, options)`
 * `put(body, options)`
 * `patch(body, options)`
+* `merge(body, options)`
 * `delete(options)`
 
 Perform an HTTP operation. For non-batched queries, these will return a promise which resolves to an HTTP response.
