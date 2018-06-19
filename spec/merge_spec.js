@@ -53,4 +53,54 @@ describe('Merge (ODATA v2) tests', function () {
 
   });
 
+  it('should batch merge products', function (done) {
+
+    request({
+      uri: 'http://services.odata.org/(S(readwrite))/V2/OData/OData.svc',
+      followRedirect: false
+    }, function (err, response) {
+
+      var q = function () {
+        // I have to replace the location because the url /V2/(S(xxx))/OData/ is refused.
+        // The OData service only accepts /(S(xxx))/V2/OData/
+        var id = response.headers.location.match(/\/(\(S\([a-z0-9]+\)\))\//)[1];
+        return odata(Object.assign({service: `http://services.odata.org/${id}/V2/OData/OData.svc`}, config));
+      };
+
+      // get every products
+      q().resource('Products')
+        .get()
+        .then(function (res) {
+          expect(res.statusCode).toEqual(200);
+          var products = JSON.parse(res.body).d;
+          var batch = q().batch();
+          products.forEach(function (product) {
+            batch.resource('Products', product.ID)
+              .merge({Name: product.Name + " (UPDATED)"});
+          });
+
+          // update the first product
+          return batch.send();
+        })
+        .then(function (res) {
+          expect(res.statusCode).toEqual(202); // Accepted
+
+          // get every products
+          return q().resource('Products').get()
+        })
+        .then(function (res) {
+          expect(res.statusCode).toEqual(200);
+          var products = JSON.parse(res.body).d;
+          products.forEach(function (product) {
+            expect(product.Name).toMatch(/ \(UPDATED\)$/);
+          });
+        })
+        .catch(function (err) {
+          fail(err);
+        })
+        .finally(done);
+    });
+
+  });
+
 });
