@@ -110,6 +110,13 @@ Batch.prototype.patch = function(body, options)
   return;
 }
 
+Batch.prototype.merge = function(body, options)
+{
+  this.ops.push(process.call(this, 'MERGE', options, body));
+  this.reset();
+  return;
+}
+
 Batch.prototype.delete = function(options)
 {
   this.ops.push(process.call(this, 'DELETE', options));
@@ -128,8 +135,7 @@ Batch.prototype.body = function()
           msg += `--${last_changeset}--\r\n`;
         }
         msg += `--${this.boundary}\r\n`;
-        msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n`;
-        msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
+        msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n\r\n`;
       }
       msg += `--${op.changeset}\r\n`;
     } else {
