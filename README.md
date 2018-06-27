@@ -64,6 +64,14 @@ q.filter(odata.literal('Customer'), '=', odata.identifer('Type')) // $filter='Cu
 
 `exact` allows you to place the string in the query exactly as intended.
 
+* `type(type, value)`
+
+Allows prefixing the value with a type name, such as an enum. e.g.
+
+```
+q.filter('DurationValue', odata.type('duration', 'P10D')) // $filter=DurationValue eq duration'P10D'
+```
+
 * `fn(name, args)`
 
 A `fn` method produces a function for use in a filter or expression. `name` is the name of the function while `args` is an object with the objwct keys
