@@ -23,6 +23,16 @@ describe('batch binary tests', function () {
     expect(contentLength).toEqual('384');
   });
 
+  it('should base64 encode a buffer', () => {
+    let buff = new Buffer(64);
+    for(let i = 0; i < buff.length; i++) {
+      buff[i] = i;
+    }
+    odata.post(buff, { headers: {'Content-Type': 'application/octet-stream'}});
+    let body = odata.body();
+    expect(/Content-Length: 90/g.test(body)).toBeTruthy();
+    expect(/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0\+Pw==/g.test(body)).toBeTruthy();
+  });
 
 });
 

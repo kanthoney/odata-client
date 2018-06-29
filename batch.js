@@ -153,18 +153,18 @@ Batch.prototype.body = function()
     });
     let body = '';
     if(op.body) {
-      let buf = '';
       if(op.headers['Content-Type'] === undefined || _.isPlainObject(op.body)) {
         msg += 'Content-Type: application/json\r\n';
         //msg += 'Content-Transfer-Encoding: binary\r\n';
-        buf = JSON.stringify(op.body);
+        body = JSON.stringify(op.body);
+      } else if(Buffer && op.body instanceof Buffer) {
+        msg += 'Content-Transfer-Encoding: base64\r\n';
+        body = `${op.body.toString('base64')}\r\n`;
       } else {
         msg += `Content-Type: ${op.headers['Content-Type']}\r\n`;
         //msg += 'Content-Transfer-Encoding: binary\r\n';
-        buf = op.body.toString();
+        body = op.body.toString();
       }
-      
-      body = `${buf}`;
     }
     msg += `Content-Length: ${byteLength(body)}\r\n\r\n${body}\r\n`;
   }
@@ -184,6 +184,12 @@ module.exports = function(q)
 
 // https://stackoverflow.com/a/23329386/3894712
 function byteLength(str) {
+  if(Buffer) {
+    if(str instanceof Buffer) {
+      return str.length;
+    }
+    return Buffer.from(str).length;
+  }
   // returns the byte length of an utf8 string
   var s = str.length;
   for (var i=str.length-1; i>=0; i--) {
