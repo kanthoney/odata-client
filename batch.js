@@ -148,22 +148,30 @@ Batch.prototype.body = function()
     msg += 'Content-Type: application/http\r\n';
     msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
     msg += `${op.method} ${op.query} HTTP/1.1\r\n`;
+    let content_type;
     _.forOwn(op.headers, function(v, k) {
-      msg += mime.foldLine(`${k}: ${v}`, 76) + '\r\n';
+      if (k.toLowerCase() === 'content-type') {
+        content_type = v;
+      } else {
+        msg += mime.foldLine(`${k}: ${v}`, 76) + '\r\n';
+      }
     });
     let body = '';
     if(op.body) {
-      if(op.headers['Content-Type'] === undefined || _.isPlainObject(op.body)) {
+      if(content_type === undefined || _.isPlainObject(op.body)) {
         msg += 'Content-Type: application/json\r\n';
         //msg += 'Content-Transfer-Encoding: binary\r\n';
         body = JSON.stringify(op.body);
-      } else if(Buffer && op.body instanceof Buffer) {
-        msg += 'Content-Transfer-Encoding: base64\r\n';
-        body = `${op.body.toString('base64')}\r\n`;
       } else {
-        msg += `Content-Type: ${op.headers['Content-Type']}\r\n`;
-        //msg += 'Content-Transfer-Encoding: binary\r\n';
-        body = op.body.toString();
+        if (content_type !== undefined) {
+          msg += `Content-Type: ${content_type}\r\n`;
+        }
+        if(Buffer && op.body instanceof Buffer) {
+          msg += 'Content-Transfer-Encoding: base64\r\n';
+          body = `${op.body.toString('base64')}\r\n`;
+        } else {
+          body = op.body.toString();
+        }
       }
     }
     msg += `Content-Length: ${byteLength(body)}\r\n\r\n${body}\r\n`;

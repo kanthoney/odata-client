@@ -24,7 +24,7 @@ describe('batch binary tests', function () {
   });
 
   it('should base64 encode a buffer', () => {
-    let buff = new Buffer(64);
+    let buff = Buffer.alloc ? Buffer.alloc(64) : new Buffer(64);
     for(let i = 0; i < buff.length; i++) {
       buff[i] = i;
     }
