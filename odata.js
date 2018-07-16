@@ -416,7 +416,7 @@ Odata.prototype.delete = function(options)
 Odata.prototype.body = function()
 {
   if(this._batch) {
-    return this._batch.body();
+    return this._batch.body().toString();
   }
   return '';
 };

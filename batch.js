@@ -126,63 +126,63 @@ Batch.prototype.delete = function(options)
 
 Batch.prototype.body = function()
 {
-  var msg = '';
+  var msg = [];
   var last_changeset = '';
+  var body = '';
+  var useString = true;
   for(let op of this.ops) {
     if(op.changeset) {
       if(op.changeset != last_changeset) {
         if(last_changeset) {
-          msg += `--${last_changeset}--\r\n`;
+          msg.push(`--${last_changeset}--\r\n`);
         }
-        msg += `--${this.boundary}\r\n`;
-        msg += `Content-Type: multipart/mixed; boundary=${op.changeset}\r\n\r\n`;
+        msg.push(`--${this.boundary}\r\n`);
+        msg.push(`Content-Type: multipart/mixed; boundary=${op.changeset}\r\n\r\n`);
       }
-      msg += `--${op.changeset}\r\n`;
+      msg.push(`--${op.changeset}\r\n`);
     } else {
       if(last_changeset) {
-        msg += `--${last_changeset}--\r\n`;
+        msg.push(`--${last_changeset}--\r\n`);
       }
-      msg += `--${this.boundary}\r\n`;
+      msg.push(`--${this.boundary}\r\n`);
     }
     last_changeset = op.changeset;
-    msg += 'Content-Type: application/http\r\n';
-    msg += 'Content-Transfer-Encoding: binary\r\n\r\n';
-    msg += `${op.method} ${op.query} HTTP/1.1\r\n`;
+    msg.push('Content-Type: application/http\r\n');
+    msg.push('Content-Transfer-Encoding: binary\r\n\r\n');
+    msg.push(`${op.method} ${op.query} HTTP/1.1\r\n`);
     let content_type;
-    _.forOwn(op.headers, function(v, k) {
-      if (k.toLowerCase() === 'content-type') {
+    _.forOwn(op.headers, function (v, k) {
+      if(k.toLowerCase() === 'content-type') {
         content_type = v;
       } else {
-        msg += mime.foldLine(`${k}: ${v}`, 76) + '\r\n';
+        msg.push(mime.foldLine(`${k}: ${v}`, 76) + '\r\n');
       }
     });
-    let body = '';
     if(op.body) {
       if(content_type === undefined || _.isPlainObject(op.body)) {
-        msg += 'Content-Type: application/json\r\n';
-        //msg += 'Content-Transfer-Encoding: binary\r\n';
+        msg.push('Content-Type: application/json\r\n');
         body = JSON.stringify(op.body);
       } else {
-        if (content_type !== undefined) {
-          msg += `Content-Type: ${content_type}\r\n`;
+        if(content_type !== undefined) {
+          msg.push(`Content-Type: ${content_type}\r\n`);
         }
         if(Buffer && op.body instanceof Buffer) {
-          msg += 'Content-Transfer-Encoding: base64\r\n';
-          body = `${op.body.toString('base64')}\r\n`;
+          body = op.body;
+          useString = false;
         } else {
           body = op.body.toString();
         }
       }
     }
-    msg += `Content-Length: ${byteLength(body)}\r\n\r\n${body}\r\n`;
+    msg.push(`Content-Length: ${useString ? byteLength(body) : body.length}\r\n\r\n`, body, '\r\n');
   }
   if(last_changeset) {
-    msg += `--${last_changeset}--\r\n`;
+    msg.push(`--${last_changeset}--\r\n`);
   }
   if(this.ops.length > 0) {
-    msg += `--${this.boundary}--\r\n`;
+    msg.push(`--${this.boundary}--\r\n`);
   }
-  return msg;
+  return useString ? msg.join('') : Buffer.concat(msg.map((str) => typeof str === "string" ? Buffer.from(str) : str));
 };
 
 module.exports = function(q)

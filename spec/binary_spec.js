@@ -7,9 +7,6 @@ const config = {
   resources: 'Customers'
 };
 
-let buff = "";
-for (let i = 0; i < 256; ++i) buff += String.fromCharCode(i);
-
 describe('batch binary tests', function () {
 
   let odata;
@@ -18,20 +15,23 @@ describe('batch binary tests', function () {
   });
 
   it('should calculate body length', function () {
+    let buff = "";
+    for (let i = 0; i < 256; ++i) buff += String.fromCharCode(i);
     odata.post(buff, {headers: {'Content-Type': 'application/octet-stream'}});
     const contentLength = /\r\nContent-Length: ([0-9]+)\r\n/.exec(odata.body())[1];
     expect(contentLength).toEqual('384');
   });
 
-  it('should base64 encode a buffer', () => {
-    let buff = Buffer.alloc ? Buffer.alloc(64) : new Buffer(64);
+  it('should use buffer', () => {
+    let buff = Buffer.alloc ? Buffer.alloc(256) : new Buffer(256);
     for(let i = 0; i < buff.length; i++) {
       buff[i] = i;
     }
     odata.post(buff, { headers: {'Content-Type': 'application/octet-stream'}});
+    let bodyBatch = odata._batch.body();
     let body = odata.body();
-    expect(/Content-Length: 90/g.test(body)).toBeTruthy();
-    expect(/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0\+Pw==/g.test(body)).toBeTruthy();
+    expect(typeof body).toEqual('string');
+    expect(Buffer.isBuffer(bodyBatch)).toBeTruthy();
   });
 
 });
