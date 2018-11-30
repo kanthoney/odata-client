@@ -65,10 +65,10 @@ Odata.prototype.and = function(field, op, value)
 Odata.prototype.or = function(field, op, value)
 {
   if(this._batch) {
-    this._batch.or(field. op, value);
+    this._batch.or(field, op, value);
   } else {
     if(this._filter) {
-      this._filter = this._filter.or(new Expression(filter, op, value));
+      this._filter = this._filter.or(new Expression(field, op, value));
     } else {
       this._filter = new Expression(field, op, value);
     }
