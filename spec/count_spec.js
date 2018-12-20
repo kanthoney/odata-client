@@ -23,5 +23,10 @@ describe('count tests', function() {
       .toEqual('https://example.com/Customers/%24count?%24filter=balance%20gt%201000');
   });
 
+  it('should get a count of Customers with balance > 1000 with a count parameter', function() {
+    expect(odata.filter('balance', '>', 1000).count(true).query())
+      .toEqual('https://example.com/Customers?%24count=true&%24filter=balance%20gt%201000');
+  });
+
 });
 

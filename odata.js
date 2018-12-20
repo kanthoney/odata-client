@@ -153,13 +153,13 @@ Odata.prototype.select = function(items)
   return this;
 };
 
-Odata.prototype.count = function()
+Odata.prototype.count = function(param)
 {
   if(this._batch) {
-    this._batch.count();
+    this._batch.count(param);
     return this;
   }
-  this._count = true;
+  this._count = param?'param':true;
   return this;
 };
 
@@ -265,7 +265,11 @@ Odata.prototype.batch = function()
 Odata.prototype.query = function()
 {
   if(this._count) {
-    this.addPathComponent('%24count');
+    if(this._count === 'param') {
+      this.addQueryParameter('$count', 'true');
+    } else {
+      this.addPathComponent('%24count');
+    }
   }
   if((this.config && this.config.format) !== undefined && this._count === undefined) {
     this.addQueryParameter('$format', this.config.format);

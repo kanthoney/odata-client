@@ -170,9 +170,9 @@ Adds an item to `$expand`
 
 Sets the term for `$search`.
 
-* `count`
+* `count(param)`
 
-Adds a `$count` clause to the query
+Adds a `$count` clause to the query. If `param` is true, adds the count clause as a query parameter instead of a pth component (#14)
 
 * `orderby(item, dir)`
 
