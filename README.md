@@ -59,7 +59,7 @@ surrounded by quotes) whereas the right argument is assumed to be a literal (str
 methods allow you to override this. e.g.
 
 ```
-q.filter(odata.literal('Customer'), '=', odata.identifer('Type')) // $filter='Customer' eq Type
+q.filter(odata.literal('Customer'), '=', odata.identifier('Type')) // $filter='Customer' eq Type
 ```
 
 `exact` allows you to place the string in the query exactly as intended.
@@ -74,7 +74,7 @@ q.filter('DurationValue', odata.type('duration', 'P10D')) // $filter=DurationVal
 
 * `fn(name, args)`
 
-A `fn` method produces a function for use in a filter or expression. `name` is the name of the function while `args` is an object with the objwct keys
+A `fn` method produces a function for use in a filter or expression. `name` is the name of the function while `args` is an object with the object keys
 being the parameter names. e.g.
 
 ```
@@ -110,7 +110,7 @@ The `left` argument is assumed to be an identifier while `right` is assumed to b
 quoting of strings.  You can override this behaviour with the `odata.literal` and `odata.identifier` functions, see above.
 
 If two or more filters are chained, they are `and`ed together. `q.filter('Balance gt 1000').filter('Status', 'stop')`
-profduces `$filter=(Balance gt 1000) and (Status eq 'stop')`.
+produces `$filter=(Balance gt 1000) and (Status eq 'stop')`.
 
 * `and(left, op, right)`
 
@@ -186,7 +186,7 @@ Adds an `$orderby` clause to the query.  There are several ways to call this fun
 
 * `custom(name, value)`
 
-Adds custom query prameters to the query using either a pair of parameters or an object, e.q.
+Adds custom query parameters to the query using either a pair of parameters or an object, e.q.
 
 ```
 q.custom('access_token', '123456') // ?access_token=123456
