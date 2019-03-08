@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/odata-client.svg)](https://badge.fury.io/js/odata-client)
+
 # odata-client
 
 A client library for accessing odata resources using node.  HTTP queries return a promise.
