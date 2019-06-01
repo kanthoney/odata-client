@@ -30,5 +30,10 @@ describe('lambda tests', function() {
                '(Order%2Fall(p1%3Ap1%2FLines%2F%24count%20lt%203))');
   });
 
+  it("should filter Customers which have any orders with an sku of 'ITEM1' or 'ITEM2'", () => {
+    expect(q.any('Order', 'Sku', 'in', ['ITEM1', 'ITEM2']).query())
+      .toEqual("https://example.com/Customers?%24filter=Order%2Fany(p0%3Ap0%2FSku%20in%20('ITEM1'%2C'ITEM2')");
+  })
+
 });
 

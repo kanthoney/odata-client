@@ -56,12 +56,20 @@ var Expression = function(field, op, value)
       value = op;
       op = 'eq';
     }
-    if(value instanceof Expression) {
-      right = `(${value.toString()})`;
+    if(op === 'in') {
+      if(!_.isArray(value)) {
+        value = [value];
+      }
+      this.exp = `${escape(field.name, true)}/${field.type}(${field.variable}:${field.variable}/${field.property} in ` +
+        `(${_.join(_.map(value, v => escape(v)))})`;
     } else {
-      right = `${escape(value)}`;
+      if(value instanceof Expression) {
+        right = `(${value.toString()})`;
+      } else {
+        right = `${escape(value)}`;
+      }
+      this.exp = `${escape(field.name, true)}/${field.type}(${field.variable}:${field.variable}/${field.property} ${getOp(op)} ${right})`;
     }
-    this.exp = `${escape(field.name, true)}/${field.type}(${field.variable}:${field.variable}/${field.property} ${getOp(op)} ${right})`;
   } else {
     var left, right;
     if(field instanceof Expression) {
@@ -73,12 +81,19 @@ var Expression = function(field, op, value)
       value = op;
       op = 'eq';
     }
-    if(value instanceof Expression) {
-      right = `(${value.toString()})`;
+    if(op === 'in') {
+      if(!_.isArray(value)) {
+        value = [value];
+      }
+      this.exp = `${left} in (${_.join(_.map(value, v => escape(v)))})`;
     } else {
-      right = `${escape(value)}`;
+      if(value instanceof Expression) {
+        right = `(${value.toString()})`;
+      } else {
+        right = `${escape(value)}`;
+      }
+      this.exp = `${left} ${getOp(op)} ${right}`;
     }
-    this.exp = `${left} ${getOp(op)} ${right}`;
   }
   return this;
 };
@@ -148,6 +163,11 @@ Expression.prototype.mod = function(value)
 {
   return this.op('%', value);
 };
+
+Expression.prototype.in = function(value)
+{
+  return new Expression(this, 'in', value);
+}
 
 Expression.prototype.and = function(field, op, value)
 {
