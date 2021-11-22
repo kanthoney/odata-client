@@ -15,11 +15,9 @@ describe('Merge (ODATA v2) tests', function () {
 
     request({
       uri: 'http://services.odata.org/V2/(S(readwrite))/OData/OData.svc',
-      followRedirect: false
     }, function (err, response) {
-
       var q = function () {
-        return odata(Object.assign({service: 'http://services.odata.org' + response.headers.location}, config));
+        return odata(Object.assign({service: response.request.headers.referer}, config));
       };
       var productId;
 
@@ -57,14 +55,19 @@ describe('Merge (ODATA v2) tests', function () {
 
     request({
       uri: 'http://services.odata.org/(S(readwrite))/V2/OData/OData.svc',
-      followRedirect: false
     }, function (err, response) {
-
-      var q = function () {
-        // I have to replace the location because the url /V2/(S(xxx))/OData/ is refused.
-        // The OData service only accepts /(S(xxx))/V2/OData/
-        var id = response.headers.location.match(/\/(\(S\([a-z0-9]+\)\))\//)[1];
-        return odata(Object.assign({service: `http://services.odata.org/${id}/V2/OData/OData.svc`}, config));
+      let m = /https:\/\/services.odata.org\/V2\/\(S\((\w+)\)\)\/OData\/OData.svc/.exec(response.request.headers.referer);
+      let key;
+      if(m) {
+        key = m[1];
+      }
+      var q = function (batch) {
+        if(batch && key) {
+          return odata(Object.assign({
+            service: `https://services.odata.org/(S(${key}))/V2/OData/OData.svc`
+          }, config));
+        }
+        return odata(Object.assign({service: response.request.headers.referer}, config));
       };
 
       // get every products
@@ -73,7 +76,7 @@ describe('Merge (ODATA v2) tests', function () {
         .then(function (res) {
           expect(res.statusCode).toEqual(200);
           var products = JSON.parse(res.body).d;
-          var batch = q().batch();
+          var batch = q(true).batch();
           products.forEach(function (product) {
             batch.resource('Products', product.ID)
               .merge({Name: product.Name + " (UPDATED)"});
