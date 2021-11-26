@@ -14,10 +14,10 @@ describe('Merge (ODATA v2) tests', function () {
   it('should merge a product', function (done) {
 
     request({
-      uri: 'http://services.odata.org/V2/(S(readwrite))/OData/OData.svc',
-    }, function (err, response) {
+      url: 'http://services.odata.org/V2/(S(readwrite))/OData/OData.svc',
+    }).then(response => {
       var q = function () {
-        return odata(Object.assign({service: response.request.headers.referer}, config));
+        return odata(Object.assign({service: response.redirectUrls[1]}, config));
       };
       var productId;
 
@@ -54,9 +54,9 @@ describe('Merge (ODATA v2) tests', function () {
   it('should batch merge products', function (done) {
 
     request({
-      uri: 'http://services.odata.org/(S(readwrite))/V2/OData/OData.svc',
-    }, function (err, response) {
-      let m = /https:\/\/services.odata.org\/V2\/\(S\((\w+)\)\)\/OData\/OData.svc/.exec(response.request.headers.referer);
+      url: 'http://services.odata.org/(S(readwrite))/V2/OData/OData.svc',
+    }).then(response => {
+      let m = /https:\/\/services.odata.org\/V2\/\(S\((\w+)\)\)\/OData\/OData.svc/.exec(response.redirectUrls[1]);
       let key;
       if(m) {
         key = m[1];
@@ -67,7 +67,7 @@ describe('Merge (ODATA v2) tests', function () {
             service: `https://services.odata.org/(S(${key}))/V2/OData/OData.svc`
           }, config));
         }
-        return odata(Object.assign({service: response.request.headers.referer}, config));
+        return odata(Object.assign({service: response.redirectUrls[1]}, config));
       };
 
       // get every products

@@ -22,12 +22,17 @@
   },
   "dependencies": {
     "bluebird": "^3.4.1",
+    "got": "^11.8.3",
     "lodash": "^4.17.14",
     "mimelib": "^0.2.19",
-    "request": "^2.88.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "jasmine": "^3.1.0"
+  },
+  "peerDependenciesMeta": {
+    "request": {
+      "optional": true
+    }
   }
 }

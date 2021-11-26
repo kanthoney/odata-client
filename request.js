@@ -2,5 +2,10 @@
 
 const Promise = require('bluebird');
 
-module.exports = Promise.promisifyAll(require('request'));
+try {
+  const request = require('request');
+  module.exports = options => Promise.fromCallback(done => request(options, done));
+} catch(error) {
+  module.exports = require('got');
+}
 

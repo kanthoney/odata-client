@@ -8,7 +8,7 @@ describe('batch tests', function() {
   var config;
   var q;
   beforeAll(function(done) {
-    request.getAsync('http://services.odata.org/V4/(S(readwrite))/OData/OData.svc/')
+    request({ method: 'GET', url: 'http://services.odata.org/V4/(S(readwrite))/OData/OData.svc/' })
       .then(function(response) {
         var body = JSON.parse(response.body);
         var r = /(.*)\$metadata/.exec(body['@odata.context']);

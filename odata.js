@@ -309,7 +309,8 @@ Odata.prototype.get = function(options)
   }
   options.url = this.query();
   options.headers = _.assign({}, this._headers, options.headers);
-  return request.getAsync(options);
+  options.method = 'GET';
+  return request(options);
 };
 
 Odata.prototype.post = function(body, options)
@@ -331,7 +332,8 @@ Odata.prototype.post = function(body, options)
   } else {
     options.body = body;
   }
-  return request.postAsync(options);
+  options.method = 'POST';
+  return request(options);
 };
 
 Odata.prototype.put = function(body, options)
@@ -353,7 +355,8 @@ Odata.prototype.put = function(body, options)
   } else {
     options.body = body;
   }
-  return request.putAsync(options);
+  options.method = 'PUT';
+  return request(options);
 };
 
 Odata.prototype.patch = function(body, options)
@@ -375,7 +378,8 @@ Odata.prototype.patch = function(body, options)
   } else {
     options.body = body;
   }
-  return request.patchAsync(options);
+  options.method = 'PATCH';
+  return request(options);
 };
 
 Odata.prototype.merge = function(body, options)
@@ -398,7 +402,7 @@ Odata.prototype.merge = function(body, options)
     options.body = body;
   }
   options.method = 'MERGE';
-  return Promise.promisify(request)(options);
+  return request(options);
 };
 
 Odata.prototype.delete = function(options)
@@ -414,7 +418,8 @@ Odata.prototype.delete = function(options)
   }
   options.url = this.query();
   options.headers = _.assign({}, this._headers, options.headers);
-  return request.deleteAsync(options);
+  options.method = 'DELETE';
+  return request(options);
 };
 
 Odata.prototype.body = function()
@@ -439,7 +444,8 @@ Odata.prototype.send = function()
                       {'Content-Type': `multipart/mixed; boundary=${this._batch.boundary}`}),
     body: this._batch.body()
   };
-  return request.postAsync(options);
+  options.method = 'POST'
+  return request(options);
 };
   
 module.exports = Odata;

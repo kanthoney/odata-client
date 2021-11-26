@@ -17,6 +17,11 @@ q.top(5).skip(10).filter('Balance gt 5000').and('CreditLimit', '<', 10000).get()
 });
 ```
 
+## ** Note on the [request](https://npmjs.com/package/request) library **
+
+As the [request](http://npmjs.com/package/request) library is now deprecated, this project has switched to using [got](https://npmjs.com/package/got). However,
+request is listed as a peer dependency and `odata-client` will use request in preference to got if it's found.
+
 ## odata object
 
 * `odata(config)`
@@ -209,7 +214,7 @@ odata({service: 'https://example.com/Customers'}).top(5).query() // 'https://exa
 * `delete(options)`
 
 Perform an HTTP operation. For non-batched queries, these will return a promise which resolves to an HTTP response.
-The `options` argument is passed to the underlying [request](https://www.npmjs.com/package/request) library.
+The `options` argument is passed to the underlying [got](https://npmjs.com/package/got) (or [request](https://www.npmjs.com/package/request)) library.
 
 For batched queries, requests are accumulated into a single document which is sent with the `send` function.
 
@@ -222,7 +227,7 @@ q.batch()...get({content_id: 1})
 * `batch`
 
 Sets up [batch processing](http://docs.oasis-open.org/odata/odata/v4.0/errata03/os/complete/part1-protocol/odata-v4.0-errata03-os-part1-protocol-complete.html#_Toc453752313).
-When batch processing is enabled and a HTTP request function is called, instead of being sent immediately the request is held in a queue.
+When batch processing is enabled and an HTTP request function is called, instead of being sent immediately the request is held in a queue.
 When the `send` function is called, all the requests are sent in one document.
 
 The code
@@ -239,6 +244,4 @@ will batch the queries `/Customers('ACME01')/Orders(1)` and `/Customers('ACME01'
 * `send`
 
 Will send a batched query, returning a promise that resolves to an HTTP response.
-
-
 
