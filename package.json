@@ -1,6 +1,6 @@
 {
   "name": "odata-client",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "odata client",
   "main": "index.js",
   "scripts": {
