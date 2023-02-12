@@ -7,7 +7,7 @@ const _ = require('lodash');
 var Url = function(u)
 {
   if(u) {
-    this.qurl = url.parse(u);
+    this.qurl = url.parse(u.href || u);
     this.params = qs.parse(this.qurl.query);
   }
   return this;

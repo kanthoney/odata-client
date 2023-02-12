@@ -6,6 +6,7 @@ try {
   const request = require('request');
   module.exports = options => Promise.fromCallback(done => request(options, done));
 } catch(error) {
-  module.exports = require('got');
+  const got = import('got');
+  module.exports = options => got.then(({ got }) => got(options));
 }
 

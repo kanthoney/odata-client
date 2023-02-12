@@ -17,7 +17,7 @@ describe('Merge (ODATA v2) tests', function () {
       url: 'http://services.odata.org/V2/(S(readwrite))/OData/OData.svc',
     }).then(response => {
       var q = function () {
-        return odata(Object.assign({service: response.redirectUrls[1]}, config));
+        return odata(Object.assign({ service: response.redirectUrls[1] }, config));
       };
       var productId;
 
