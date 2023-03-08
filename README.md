@@ -90,6 +90,24 @@ q.filter(odata.fn('SalesRegion', { City: odata.identifier('$it/City') }), '=', '
 
 The query object has the following methods:
 
+* `resource(resource, value)`
+
+Adds a new part to the resource section. e.g.
+
+```
+odata({service: 'https://example.com'}).resource('Customers').resource('Orders'); // https://example.com/Customers/Orders
+odata({service: 'https://example.com'}).resource('Customers', 'ACME01').resource('Orders'); // https://example.com/Customers('ACME01')/Orders
+odata({service: 'https://example.com'}).resource('Customers', {account:'ACME01'}).resource('Orders'); // https://example.com/Customers(account='ACME01')/Orders
+```
+
+* `fn(name, args)`
+
+Add a function component to the resource section. `name` is the name of the function whereas `args` is an object with the keys being the parameter names. e.g.
+
+```
+odata({service: 'https://example.com'}).fn('Customer', { Account: 'ACME01' }); // https://example.com/Customer(Account='ACME01')
+```
+
 * `top(n)`
 
 Adds a `$top=n` query parameter.
@@ -143,24 +161,6 @@ Adds an `any` filter, e.g.
 
 ```
 q.any('Orders', 'Lines/$count', '>=', 10) // ?$filter=Orders/any(p0:p0/Lines/$count ge 10)
-```
-
-* `resource(resource, value)`
-
-Adds a new part to the resource section. e.g.
-
-```
-odata({service: 'https://example.com'}).resource('Customers').resource('Orders'); // https://example.com/Customers/Orders
-odata({service: 'https://example.com'}).resource('Customers', 'ACME01').resource('Orders'); // https://example.com/Customers('ACME01')/Orders
-odata({service: 'https://example.com'}).resource('Customers', {account:'ACME01'}).resource('Orders'); // https://example.com/Customers(account='ACME01')/Orders
-```
-
-* `fn(name, args)`
-
-Add a function component to the resource section. `name` is the name of the function whereas `args` is an object with the keys being the parameter names. e.g.
-
-```
-odata({service: 'https://example.com'}).fn('Customer', { Account: 'ACME01' }); // https://example.com/Customer(Account='ACME01')
 ```
 
 * `select(items)`
