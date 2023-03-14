@@ -59,10 +59,10 @@ describe('filter tests', function() {
     expect(odata.or(
       items.map(item => {
         return Odata.expression().and(Object.keys(item).map(k => {
-          return Odata.expression(k, '=', item[k]);
+          return [k, '=', item[k]];
         }));
       })).query()).toBe(
-        "https://example.com/Customer?%24filter=((key1%20eq%20'abc'%20and%20key2%20eq%20'123')%20or%20(key1%20eq%20'def'%20and%20key2%20eq%20'456')%20or%20(key1%20eq%20'ghi'))"
+        "https://example.com/Customer?%24filter=(key1%20eq%20'abc'%20and%20key2%20eq%20'123')%20or%20(key1%20eq%20'def'%20and%20key2%20eq%20'456')%20or%20(key1%20eq%20'ghi')"
       );
   });
 
@@ -76,10 +76,10 @@ describe('filter tests', function() {
     expect(odata.and(
       items.map(item => {
         return Odata.expression().or(Object.keys(item).map(k => {
-          return Odata.expression(k, '=', item[k]);
+          return [k, '=', item[k]];
         }));
       })).query()).toBe(
-        "https://example.com/Customer?%24filter=((key1%20eq%20'abc'%20or%20key2%20eq%20'123')%20and%20(key1%20eq%20'def'%20or%20key2%20eq%20'456')%20and%20(key1%20eq%20'ghi'))"
+        "https://example.com/Customer?%24filter=(key1%20eq%20'abc'%20or%20key2%20eq%20'123')%20and%20(key1%20eq%20'def'%20or%20key2%20eq%20'456')%20and%20(key1%20eq%20'ghi')"
       );
   });
 

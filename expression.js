@@ -179,10 +179,10 @@ Expression.prototype.and = function(field, op, value)
     let expressions = field.reduce((acc, f) => {
       if(f instanceof Expression) {
         if(f.exp) {
-          acc.push(f.toString());
+          acc.push(`(${f.toString()})`);
         }
       } else if(f instanceof Array) {
-        E = new Expression(...f);
+        let E = new Expression(...f);
         if(E.exp) {
           acc.push(E.toString());
         }
@@ -195,7 +195,7 @@ Expression.prototype.and = function(field, op, value)
       if(this.exp) {
         this.exp += `and (${expressions})`;
       } else {
-        this.exp = `(${expressions})`;
+        this.exp = `${expressions}`;
       }
     }
     return this;
@@ -216,10 +216,10 @@ Expression.prototype.or = function(field, op, value)
     let expressions = field.reduce((acc, f) => {
       if(f instanceof Expression) {
         if(f.exp) {
-          acc.push(f.toString());
+          acc.push(`(${f.toString()})`);
         }
       } else if(f instanceof Array) {
-        E = new Expression(...f);
+        let E = new Expression(...f);
         if(E.exp) {
           acc.push(E.toString());
         }
@@ -232,7 +232,7 @@ Expression.prototype.or = function(field, op, value)
       if(this.exp) {
         this.exp += `or (${expressions})`;
       } else {
-        this.exp = `(${expressions})`;
+        this.exp = `${expressions}`;
       }
     }
     return this;
