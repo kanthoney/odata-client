@@ -47,6 +47,8 @@ var Expression = function(field, op, value)
       this.exp = field.exp;
     } else if(_.isString(field)) {
       this.exp = field;
+    } else if(field === undefined) {
+      this.exp = '';
     } else {
       this.exp = escape(field, true);
     }
@@ -70,6 +72,8 @@ var Expression = function(field, op, value)
       }
       this.exp = `${escape(field.name, true)}/${field.type}(${field.variable}:${field.variable}/${field.property} ${getOp(op)} ${right})`;
     }
+  } else if(field === undefined) {
+    this.exp = '';
   } else {
     var left, right;
     if(field instanceof Expression) {
@@ -171,12 +175,76 @@ Expression.prototype.in = function(value)
 
 Expression.prototype.and = function(field, op, value)
 {
-  return new Expression(this, 'and', new Expression(field, op, value));
+  if(field instanceof Array) {
+    let expressions = field.reduce((acc, f) => {
+      if(f instanceof Expression) {
+        if(f.exp) {
+          acc.push(f.toString());
+        }
+      } else if(f instanceof Array) {
+        E = new Expression(...f);
+        if(E.exp) {
+          acc.push(E.toString());
+        }
+      } else {
+        acc.push(f.toString());
+      }
+      return acc;
+    }, []).join(' and ');
+    if(expressions.length > 0) {
+      if(this.exp) {
+        this.exp += `and (${expressions})`;
+      } else {
+        this.exp = `(${expressions})`;
+      }
+    }
+    return this;
+  }
+  if(this.exp) {
+    let E = new Expression(field, op, value);
+    if(E.exp) {
+      return new Expression(this, 'and', E);
+    }
+    return this;
+  }
+  return new Expression(field, op, value);
 };
 
 Expression.prototype.or = function(field, op, value)
 {
-  return new Expression(this, 'or', new Expression(field, op, value));
+  if(field instanceof Array) {
+    let expressions = field.reduce((acc, f) => {
+      if(f instanceof Expression) {
+        if(f.exp) {
+          acc.push(f.toString());
+        }
+      } else if(f instanceof Array) {
+        E = new Expression(...f);
+        if(E.exp) {
+          acc.push(E.toString());
+        }
+      } else {
+        acc.push(f.toString());
+      }
+      return acc;
+    }, []).join(' or ');
+    if(expressions.length > 0) {
+      if(this.exp) {
+        this.exp += `or (${expressions})`;
+      } else {
+        this.exp = `(${expressions})`;
+      }
+    }
+    return this;
+  }
+  if(this.exp) {
+    let E = new Expression(field, op, value);
+    if(E.exp) {
+      return new Expression(this, 'or', E);
+    }
+    return this;
+  }
+  return new Expression(field, op, value);
 };
 
 module.exports = Expression;

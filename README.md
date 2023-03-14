@@ -129,6 +129,8 @@ arguments can be `odata.expression`s for building nested queries.
 
   1. If called with two arguments, the operator is assumed to be `eq`, e.g. `q.filter('Account', 'ACME01')`
 
+  1. If called with an array of expressions as the first argument, `and` the expressions together.
+
 The `left` argument is assumed to be an identifier while `right` is assumed to be a literal, which affects the
 quoting of strings.  You can override this behaviour with the `odata.literal` and `odata.identifier` functions, see above.
 
@@ -141,7 +143,7 @@ Synonym for `filter`.
 
 * `or(left, op, right)`
 
-Adds an `or` clause to the filter being built.
+Adds an `or` clause to the filter being built. If called with an array of expressions, `or` the expressions together.
 
 * `not(left, op, right)`
 

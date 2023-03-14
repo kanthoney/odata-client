@@ -48,10 +48,19 @@ Odata.prototype.filter = function(field, op, value)
   if(this._batch) {
     this._batch.filter(field, op, value);
   } else {
-    if(this._filter) {
-      this._filter = this._filter.and(new Expression(field, op, value));
+    let E;
+    if(field instanceof Array) {
+      E = new Expression();
+      E.and(field);
     } else {
-      this._filter = new Expression(field, op, value);
+      E = new Expression(field, op, value);
+    }
+    if(E.exp) {
+      if(this._filter) {
+        this._filter = this._filter.and(E);
+      } else {
+        this._filter = E;
+      }
     }
   }
   return this;
@@ -67,10 +76,19 @@ Odata.prototype.or = function(field, op, value)
   if(this._batch) {
     this._batch.or(field, op, value);
   } else {
-    if(this._filter) {
-      this._filter = this._filter.or(new Expression(field, op, value));
+    let E;
+    if(field instanceof Array) {
+      E = new Expression();
+      E.or(field);
     } else {
-      this._filter = new Expression(field, op, value);
+      E = new Expression(field, op, value);
+    }
+    if(E.exp) {
+      if(this._filter) {
+        this._filter = this._filter.or(E);
+      } else {
+        this._filter = E;
+      }
     }
   }
   return this;

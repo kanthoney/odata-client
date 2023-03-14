@@ -130,5 +130,31 @@ describe('expression tests', function() {
     expect(e6.toString()).toEqual('[6,\'s\']');
   });
 
+  it('should create a complex expression', () => {
+    let items = [
+      { key1: 'abc', key2: '123' },
+      { key1: 'def', key2: '456' },
+      { key1: 'ghi' },
+      {}
+    ];
+    expect(new Expression().or(
+      items.map(item => {
+        return new Expression().and(Object.keys(item).map(k => {
+          return new Expression(k, '=', item[k]);
+        }));
+      })).toString()).toBe(
+        "((key1 eq 'abc' and key2 eq '123') or (key1 eq 'def' and key2 eq '456') or (key1 eq 'ghi'))"
+      );
+  });
+
+  it('should create an empty expression', () => {
+    let items = [];
+    expect(items.reduce((acc, item) => {
+      return acc.or(Object.keys(item).reduce((acc, k) => {
+        return acc.and(k, '=', item[k]);
+      }, new Expression()));
+    }, new Expression()).toString()).toBe("");
+  });
+
 });
 

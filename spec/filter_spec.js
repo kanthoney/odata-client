@@ -49,5 +49,39 @@ describe('filter tests', function() {
       .toEqual('https://example.com/Customer?%24filter=\'ABC001\'%20eq%20account');
   });
 
+  it('should produce a complex filter', () => {
+    let items = [
+      { key1: 'abc', key2: '123' },
+      { key1: 'def', key2: '456' },
+      { key1: 'ghi' },
+      {}
+    ];
+    expect(odata.or(
+      items.map(item => {
+        return Odata.expression().and(Object.keys(item).map(k => {
+          return Odata.expression(k, '=', item[k]);
+        }));
+      })).query()).toBe(
+        "https://example.com/Customer?%24filter=((key1%20eq%20'abc'%20and%20key2%20eq%20'123')%20or%20(key1%20eq%20'def'%20and%20key2%20eq%20'456')%20or%20(key1%20eq%20'ghi'))"
+      );
+  });
+
+  it('should produce a complex filter', () => {
+    let items = [
+      { key1: 'abc', key2: '123' },
+      { key1: 'def', key2: '456' },
+      { key1: 'ghi' },
+      {}
+    ];
+    expect(odata.and(
+      items.map(item => {
+        return Odata.expression().or(Object.keys(item).map(k => {
+          return Odata.expression(k, '=', item[k]);
+        }));
+      })).query()).toBe(
+        "https://example.com/Customer?%24filter=((key1%20eq%20'abc'%20or%20key2%20eq%20'123')%20and%20(key1%20eq%20'def'%20or%20key2%20eq%20'456')%20and%20(key1%20eq%20'ghi'))"
+      );
+  });
+
 });
 
