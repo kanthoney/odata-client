@@ -52,6 +52,8 @@ Odata.prototype.filter = function(field, op, value)
     if(field instanceof Array) {
       E = new Expression();
       E.and(field);
+    } else if(field instanceof Expression && op === undefined && value === undefined) {
+      E = field;
     } else {
       E = new Expression(field, op, value);
     }
@@ -80,6 +82,8 @@ Odata.prototype.or = function(field, op, value)
     if(field instanceof Array) {
       E = new Expression();
       E.or(field);
+    } else if(field instanceof Expression && op === undefined && value === undefined) {
+      E = field;
     } else {
       E = new Expression(field, op, value);
     }

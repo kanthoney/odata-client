@@ -143,7 +143,7 @@ describe('expression tests', function() {
           return new Expression(k, item[k]);
         }));
       })).toString()).toBe(
-        "((key1 eq 'abc') and (key2 eq '123')) or ((key1 eq 'def') and (key2 eq '456')) or ((key1 eq 'ghi'))"
+        "(key1 eq 'abc' and key2 eq '123') or (key1 eq 'def' and key2 eq '456') or (key1 eq 'ghi')"
       );
   });
 
@@ -162,6 +162,26 @@ describe('expression tests', function() {
       })).toString()).toBe(
         "(key1 eq 'abc' and key2 eq '123') or (key1 eq 'def' and key2 eq '456') or (key1 eq 'ghi')"
       );
+  });
+
+  it('should create a deep expression', () => {
+    expect(new Expression().or(
+      [
+        ['key1', 'abc'],
+        new Expression().and(
+          [
+            ['key1', 'def'],
+            ['key2', '123']
+          ]
+        ).and(new Expression('key3', 'xyz').or([
+          ['key3', 'rst'],
+          ['key3', 'gt', 'lmn'],
+          [new Expression('key4', '+', 5), 'gt', 6]
+        ]))
+      ]
+    ).toString()).toBe(
+      "key1 eq 'abc' or (key1 eq 'def' and key2 eq '123' and (key3 eq 'xyz' or key3 eq 'rst' or key3 gt 'lmn' or (key4 add 5) gt 6))"
+    );
   });
 
   it('should create an empty expression', () => {

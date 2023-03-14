@@ -26,8 +26,8 @@ describe('lambda tests', function() {
 
   it('should filter Customers which have all orders with a value of below 50 and line count below 3', function() {
     expect(q.all('Order', 'Value', 'lt', 50).all('Order', 'Lines/$count', '<', 3).query())
-      .toEqual('https://example.com/Customers?%24filter=(Order%2Fall(p0%3Ap0%2FValue%20lt%2050))%20and%20' +
-               '(Order%2Fall(p1%3Ap1%2FLines%2F%24count%20lt%203))');
+      .toEqual('https://example.com/Customers?%24filter=Order%2Fall(p0%3Ap0%2FValue%20lt%2050)%20and%20' +
+               'Order%2Fall(p1%3Ap1%2FLines%2F%24count%20lt%203)');
   });
 
   it("should filter Customers which have any orders with an sku of 'ITEM1' or 'ITEM2'", () => {
