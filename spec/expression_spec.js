@@ -164,6 +164,12 @@ describe('expression tests', function() {
       );
   });
 
+  it('should create an expression from an object', () => {
+    expect(new Expression().or([{ key1: 'abc', key2: '123' }, { key1: 'def', key2: '456' }]).toString()).toBe(
+      "(key1 eq 'abc' and key2 eq '123') or (key1 eq 'def' and key2 eq '456')"
+    );
+  });
+
   it('should create a deep expression', () => {
     expect(new Expression().or(
       [

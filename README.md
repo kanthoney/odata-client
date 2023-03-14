@@ -159,6 +159,12 @@ Adds an `or` clause to the filter being built. If called with an array of expres
   q.or([['key1', 'abc'], ['key2', 'def']])
   ```
 
+You can also pass an array of objects:
+
+```
+q.or([{ key1: 'abc', key2: '123' }, { key1: 'def', key2: '456' }]) // (key1 eq 'abc' and key2 eq '123') or (key1 eq 'def' and key2 eq 456)
+```
+
 * `not(left, op, right)`
 
 Adds a `not` clause to the filter

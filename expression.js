@@ -49,6 +49,11 @@ var Expression = function(field, op, value)
       this.exp = field;
     } else if(field === undefined) {
       this.exp = '';
+    /*} else if(_.isPlainObject(field)) {
+      const fields = Object.keys(field).reduce((acc, k) => acc.concat([[k, field[k]]]), []);
+      this.and(fields);
+    } else if(field instanceof Array) {
+      this.or(field);*/
     } else {
       this.exp = escape(field, true);
     }
@@ -183,25 +188,20 @@ Expression.prototype.and = function(field, op, value)
 {
   if(field instanceof Array) {
     let expressions = field.reduce((acc, f) => {
+      let E;
       if(f instanceof Expression) {
-        if(f.exp) {
-          if((f.brackets || 'and') === 'and') { 
-            acc.push(f.toString());
-          } else {
-            acc.push(`(${f.toString()})`);
-          }
-        }
+        E = f;
       } else if(f instanceof Array) {
-        let E = new Expression(...f);
-        if(E.exp) {
-          if((E.brackets || 'and') === 'and') {
-            acc.push(E.toString());
-          } else {
-            acc.push(`(${E.toString()})`);
-          }
-        }
+        E = new Expression(...f);
       } else {
-        acc.push(f.toString());
+        E = new Expression(f);
+      }
+      if(E.exp) {
+        if((E.brackets || 'and') === 'and') {
+          acc.push(E.toString());
+        } else {
+          acc.push(`(${E.toString()})`);
+        }
       }
       return acc;
     }, []);
@@ -247,25 +247,22 @@ Expression.prototype.or = function(field, op, value)
 {
   if(field instanceof Array) {
     let expressions = field.reduce((acc, f) => {
+      let E;
       if(f instanceof Expression) {
-        if(f.exp) {
-          if((f.brackets || 'or') === 'or') {
-            acc.push(`${f.toString()}`);
-          } else {
-            acc.push(`(${f.toString()})`);
-          }
-        }
+        E = f;
       } else if(f instanceof Array) {
-        let E = new Expression(...f);
-        if(E.exp) {
-          if((E.brackets || 'or') === 'or') {
-            acc.push(E.toString());
-          } else {
-            acc.push(`(${E.toString()})`);
-          }
-        }
+        E = new Expression(...f);
+      } else if(_.isPlainObject(f)) {
+        E = new Expression().and(Object.keys(f).reduce((acc, k) => acc.concat([[k, f[k]]]), []));
       } else {
-        acc.push(f.toString());
+        E = new Expression(f);
+      }
+      if(E.exp) {
+        if((E.brackets || 'or') === 'or') {
+          acc.push(E.toString());
+        } else {
+          acc.push(`(${E.toString()})`);
+        }
       }
       return acc;
     }, []);
