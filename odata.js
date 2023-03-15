@@ -20,6 +20,9 @@ var Odata = function(config)
   if(config.custom) {
     this.url.addQueryParameter(config.custom);
   }
+  if(! config.request) {
+    config['request'] = {};
+  }
   this._headers = config.headers || {};
   this._nextLambda = 0;
   if(config.version) {
@@ -318,9 +321,10 @@ Odata.prototype.query = function()
   return this.url.get();
 };
 
-Odata.prototype.get = function(options)
+Odata.prototype.get = function(opt)
 {
-  options = options || {};
+  var options =  {}; //merge into locally scopped object
+  Object.assign(options, this.config.request, opt);
   options.headers = options.headers || {};
   if(options.content_id) {
     options.headers['Content-ID'] = options.content_id;
@@ -335,9 +339,10 @@ Odata.prototype.get = function(options)
   return request(options);
 };
 
-Odata.prototype.post = function(body, options)
+Odata.prototype.post = function(body, opt)
 {
-  options = options || {};
+  var options =  {}; //merge into locally scopped object
+  Object.assign(options, this.config.request, opt);
   options.headers = options.headers || {};
   if(options.content_id) {
     options.headers['Content-ID'] = options.content_id;
@@ -358,9 +363,11 @@ Odata.prototype.post = function(body, options)
   return request(options);
 };
 
-Odata.prototype.put = function(body, options)
+Odata.prototype.put = function(body, opt)
 {
-  options = options || {};
+  var options =  {}; //merge into locally scopped object
+  Object.assign(options, this.config.request, opt);
+
   options.headers = options.headers || {};
   if(options.content_id) {
     options.headers['Content-ID'] = options.content_id;
@@ -381,9 +388,10 @@ Odata.prototype.put = function(body, options)
   return request(options);
 };
 
-Odata.prototype.patch = function(body, options)
+Odata.prototype.patch = function(body, opt)
 {
-  options = options || {};
+  var options =  {}; //merge into locally scopped object
+  Object.assign(options, this.config.request, opt);
   options.headers = options.headers || {};
   if(options.content_id) {
     options.headers['Content-ID'] = options.content_id;
@@ -404,9 +412,10 @@ Odata.prototype.patch = function(body, options)
   return request(options);
 };
 
-Odata.prototype.merge = function(body, options)
+Odata.prototype.merge = function(body, opt)
 {
-  options = options || {};
+  var options =  {}; //merge into locally scopped object
+  Object.assign(options, this.config.request, opt);
   options.headers = options.headers || {};
   if(options.content_id) {
     options.headers['Content-ID'] = options.content_id;
@@ -427,9 +436,10 @@ Odata.prototype.merge = function(body, options)
   return request(options);
 };
 
-Odata.prototype.delete = function(options)
+Odata.prototype.delete = function(opt)
 {
-  options = options || {};
+  var options =  {}; //merge into locally scopped object
+  Object.assign(options, this.config.request, opt);
   options.headers = options.headers || {};
   if(options.content_id) {
     options.headers['Content-ID'] = options.content_id;
@@ -469,6 +479,6 @@ Odata.prototype.send = function()
   options.method = 'POST'
   return request(options);
 };
-  
+
 module.exports = Odata;
 
