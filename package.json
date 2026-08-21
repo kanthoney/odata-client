@@ -25,7 +25,7 @@
     "got": "^12.5.3",
     "lodash": "^4.17.14",
     "mimelib": "^0.2.19",
-    "uuid": "^8.3.2"
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "jasmine": "^3.1.0"
